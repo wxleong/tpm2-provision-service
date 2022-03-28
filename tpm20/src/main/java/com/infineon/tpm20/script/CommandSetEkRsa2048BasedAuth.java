@@ -55,6 +55,15 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
                 ekPub = rpResp.outPublic;
             }
 
+            try {
+                readAndVerifyEkCert(tpm);
+                check EK pub == EkCert pub
+                create test with mock function
+            } catch (Exception e) {
+                setResult(new ResultEkBasedAuth(false));
+                return;
+            }
+
             /* create a temp key under the NULL hierarchy */
 
             TPMT_PUBLIC keyTemplate = new TPMT_PUBLIC(TPM_ALG_ID.SHA1,
@@ -69,23 +78,6 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
             CreatePrimaryResponse eccKey = tpm.CreatePrimary(TPM_HANDLE.from(TPM_RH.NULL),
                     new TPMS_SENSITIVE_CREATE(new byte[0], new byte[0]), keyTemplate, new byte[0],
                     new TPMS_PCR_SELECTION[0]);
-
-            /* read EK (RSA2048) certificate */
-
-            TPM_HANDLE nvHandle = TPM_HANDLE.NV(0x1c00002);
-            NV_ReadPublicResponse nvPub = tpm.NV_ReadPublic(nvHandle);
-            byte[] baEkCert = tpm.NV_Read(nvHandle, nvHandle,  nvPub.nvPublic.dataSize,  0);
-
-            /* verify the certificate */
-
-            try {
-                CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
-                X509Certificate ekCert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(baEkCert));
-                caService.verify(ekCert);
-            } catch (Exception e) {
-                setResult(new ResultEkBasedAuth(false));
-                return;
-            }
 
             /* create a secret */
 
@@ -122,5 +114,20 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
             //e.printStackTrace();
             throw e;
         }
+    }
+
+    private void readAndVerifyEkCert(Tpm tpm) throws Exception {
+
+        /* read EK (RSA2048) certificate */
+
+        TPM_HANDLE nvHandle = TPM_HANDLE.NV(0x1c00002);
+        NV_ReadPublicResponse nvPub = tpm.NV_ReadPublic(nvHandle);
+        byte[] baEkCert = tpm.NV_Read(nvHandle, nvHandle, nvPub.nvPublic.dataSize,  0);
+
+        /* verify the certificate */
+
+        CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
+        X509Certificate ekCert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(baEkCert));
+        caService.verify(ekCert);
     }
 }
