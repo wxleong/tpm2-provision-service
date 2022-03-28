@@ -1,0 +1,3 @@
+[submodule "TSS.MSR"]
+	path = TSS.MSR
+	url = https://github.com/wxleong/TSS.MSR
