@@ -15,7 +15,7 @@ This is a TPM 2.0 provisioning service.
 
 - Software: Docker, Maven, Intellij IDEA
 - Raspberry Pi 4 Model B
-- [Iridium 9670 TPM 2.0 board](https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/)
+- Iridium 9670 TPM 2.0 board [[5]](#5)
 
 # Endpoints
 
@@ -38,8 +38,8 @@ $ docker run -d -p 1014:1014 -p 1015:1015 --rm -it tpm20:local
 Using the tpm20 service to provision a TPM on Raspberry Pi.
 
 Tested on:
-- Raspberry Pi 4 Model B ([Raspberry Pi OS image](https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-11-08/2021-10-30-raspios-bullseye-armhf.zip))
-- [Iridium 9670 TPM 2.0 board](https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/)
+- Raspberry Pi 4 Model B (Raspberry Pi OS image [[6]](#6))
+- Iridium 9670 TPM 2.0 board [[5]](#5)
 
 Setup your Raspberry Pi according to [[4]](#4).
 
@@ -51,7 +51,7 @@ $ sudo usermod -aG docker pi
 $ docker version
 ```
 
-Address a known [issue](https://github.com/AdoptOpenJDK/openjdk-docker/issues/469) by updating libseccomp to version 2.4.2 or newer:
+Address a known issue [[7]](#7) by updating libseccomp to version 2.4.2 or newer:
 <!--
 ```
 $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138
@@ -130,6 +130,9 @@ $ openssl x509 -inform der -in rsa_ek.crt.der -text
 <a id="2">[2] https://start.spring.io/</a> <br>
 <a id="3">[3] https://maven.apache.org/</a> <br>
 <a id="4">[4] https://github.com/wxleong/tpm2-rpi4/</a> <br>
+<a id="5">[5] https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/</a> <br>
+<a id="6">[6] https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-11-08/2021-10-30-raspios-bullseye-armhf.zip</a> <br>
+<a id="7">[7] https://github.com/AdoptOpenJDK/openjdk-docker/issues/469</a> <br>
 
 # License
 
