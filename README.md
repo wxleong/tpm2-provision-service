@@ -35,7 +35,7 @@ $ docker run -d -p 1014:1014 -p 1015:1015 --rm -it tpm20:local
 
 # Device Agent
 
-An example using the tpm20 service to provision a TPM on Raspberry Pi.
+Using the tpm20 service to provision a TPM on Raspberry Pi.
 
 Tested on:
 - Raspberry Pi 4 Model B ([Raspberry Pi OS image](https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-11-08/2021-10-30-raspios-bullseye-armhf.zip))
