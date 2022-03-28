@@ -13,7 +13,9 @@ This is a TPM 2.0 provisioning service.
 
 # Prerequisites
 
-- Docker, Maven, Intellij IDEA
+- Software: Docker, Maven, Intellij IDEA
+- Raspberry Pi 4 Model B (5.4.83-v7l+)
+- [Iridium 9670 TPM 2.0 board](https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/)
 
 # Endpoints
 
