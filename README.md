@@ -19,8 +19,6 @@ This is a TPM 2.0 provisioning service.
 
 # Endpoints
 
-Table below for summary or visit [here](doc/architecture.pptx) for graphic illustration.
-
 | Microservice | Endpoint / Console | Info |
 |---|---|---|
 | TPM20 | Public:<ul><li>http://localhost:1014/api</li></ul>Management:<ul><li>http://localhost:1015/actuator</li><li>http://localhost:1015/actuator/openapi</li><li>http://localhost:1015/actuator/swaggerui</li></ul> | |
