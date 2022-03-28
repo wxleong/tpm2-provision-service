@@ -14,7 +14,7 @@ This is a TPM 2.0 provisioning service.
 # Prerequisites
 
 - Software: Docker, Maven, Intellij IDEA
-- Raspberry Pi 4 Model B (5.4.83-v7l+)
+- Raspberry Pi 4 Model B
 - [Iridium 9670 TPM 2.0 board](https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/)
 
 # Endpoints
@@ -29,17 +29,17 @@ Table below for summary or visit [here](doc/architecture.pptx) for graphic illus
 
 Build from scratch:
 ```
-$ git clone https://github.com/wxleong/tpm2-provision-ms
-$ cd ~/tpm2-provision-ms
+$ git clone https://github.com/wxleong/tpm2-provision-service
+$ cd ~/tpm2-provision-service
 $ docker build -t tpm20:1.0 -f "./tpm20/Dockerfile" .
 $ docker run -d -p 1014:1014 -p 1015:1015 --rm -it tpm20:1.0
 ```
 
 Pull from Github Container Registry. The image supports linux/amd64, linux/arm/v7, and linux/arm64/v8.
 ```
-$ docker pull ghcr.io/wxleong/tpm2-provision-ms/tpm20:1.0
+$ docker pull ghcr.io/wxleong/tpm2-provision-service/tpm20:1.0
 $ docker images
-$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-ms/tpm20:1.0
+$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-service/tpm20:1.0
 ```
 
 # Device Agent
@@ -47,7 +47,7 @@ $ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provisio
 An example using the tpm20 service to provision a TPM on Raspberry Pi.
 
 Tested on:
-- Raspberry Pi 4 Model B (5.4.83-v7l+)
+- Raspberry Pi 4 Model B (5.4.83-v7l+)([image](https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-11-08/2021-10-30-raspios-bullseye-armhf.zip))
 - [Iridium 9670 TPM 2.0 board](https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/)
 
 Install Docker on Raspberry Pi:
@@ -60,7 +60,7 @@ $ docker version
 
 Download tpm20 docker image:
 ```
-$ docker pull --platform linux/arm/v7 ghcr.io/wxleong/tpm2-provision-ms/tpm20:1.0
+$ docker pull --platform linux/arm/v7 ghcr.io/wxleong/tpm2-provision-service/tpm20:1.0
 $ docker images
 ```
 
@@ -86,13 +86,13 @@ $ sudo make install
 
 Launch the tpm20 image:
 ```
-$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-ms/tpm20:1.0
+$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-service/tpm20:1.0
 ```
 
 Build device agent:
 ```
 $ git clone https://github.com/wxleong/tpm2-provision-service ~/tpm2-provision-service
-$ cd ~/tpm2-provision-ms/device
+$ cd ~/tpm2-provision-service/device
 $ gcc -Wall xfer.c -o xfer
 ```
 
