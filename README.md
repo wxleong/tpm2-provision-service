@@ -98,12 +98,14 @@ $ gcc -Wall xfer.c -o xfer
 
 Finally, run the get-random script. TPM command and response will be exchanged in-between the TPM and tpm20 service, device's TSS library is not involved at this stage. Eventually, the service will obtain a random value from the TPM.
 ```
+$ sudo chmod a+rw /dev/tpmrm0
 $ chmod a+x provision-get-random.sh
 $ ./provision-get-random.sh
 ```
 
 Create RSA2048 endorsement key and persist it at handle 0x81010001:
 ```
+$ sudo chmod a+rw /dev/tpmrm0
 $ chmod a+x provision
 $ ./provision.sh create-ek-rsa2048
 ```
