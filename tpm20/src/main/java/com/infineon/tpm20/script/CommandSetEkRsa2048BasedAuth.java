@@ -27,7 +27,6 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
             TPM_HANDLE ekPersistentHandle = TPM_HANDLE.persistent(0x00010001); // 0x81010001
             byte[] standardEKPolicy = Helpers.fromHex("837197674484b3f81a90cc8d46a5d724fd52d76e06520b64f2a1da1b331469aa");
             TPMT_PUBLIC ekPub;
-            byte[] ekPubName;
 
             /* check EK persistent handle exist */
 
@@ -52,11 +51,24 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
                 tpm.EvictControl(TPM_HANDLE.from(TPM_RH.OWNER), rsaEk.handle, ekPersistentHandle);
 
                 ekPub = rsaEk.outPublic;
-                ekPubName = rsaEk.name;
             } else {
                 ekPub = rpResp.outPublic;
-                ekPubName = rpResp.name;
             }
+
+            /* create a temp key under the NULL hierarchy */
+
+            TPMT_PUBLIC keyTemplate = new TPMT_PUBLIC(TPM_ALG_ID.SHA1,
+                    new TPMA_OBJECT(TPMA_OBJECT.fixedTPM, TPMA_OBJECT.fixedParent, TPMA_OBJECT.sensitiveDataOrigin,
+                            TPMA_OBJECT.userWithAuth, TPMA_OBJECT.noDA, TPMA_OBJECT.restricted, TPMA_OBJECT.decrypt),
+                    new byte[0], new TPMS_ECC_PARMS(new TPMT_SYM_DEF_OBJECT(TPM_ALG_ID.AES,  128, TPM_ALG_ID.CFB),
+                    new TPMS_NULL_ASYM_SCHEME(),
+                    TPM_ECC_CURVE.NIST_P256,
+                    new TPMS_NULL_KDF_SCHEME()),
+                    new TPMS_ECC_POINT());
+
+            CreatePrimaryResponse eccKey = tpm.CreatePrimary(TPM_HANDLE.from(TPM_RH.NULL),
+                    new TPMS_SENSITIVE_CREATE(new byte[0], new byte[0]), keyTemplate, new byte[0],
+                    new TPMS_PCR_SELECTION[0]);
 
             /* read EK (RSA2048) certificate */
 
@@ -82,7 +94,7 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
             /* make credential to wrap the secret using software lib */
 
             Tss.ActivationCredential credential = Tss.createActivationCredential(ekPub,
-                    ekPubName, challenge);
+                    eccKey.name, challenge);
 
             /* activate credential to unwrap the secret using TPM */
 
@@ -97,7 +109,7 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
                 return;
             }
             tpm._withSessions(TPM_HANDLE.pwSession(new byte[0]), policySession.handle);
-            byte[] recoveredChallenge = tpm.ActivateCredential(ekPersistentHandle, ekPersistentHandle,
+            byte[] recoveredChallenge = tpm.ActivateCredential(eccKey.handle, ekPersistentHandle,
                     credential.CredentialBlob, credential.Secret);
 
             /* verify the challenge */
