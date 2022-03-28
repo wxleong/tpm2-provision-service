@@ -91,6 +91,13 @@ $ cd ~/tpm2-provision-service/device
 $ gcc -Wall xfer.c -o xfer
 ```
 
+List all available scripts:
+```
+$ curl http://localhost:1014/api/v1/scripts
+```
+
+Alternatively, develop your own script [here](tpm20/src/main/java/com/infineon/tpm20/script).
+
 ## Example 1
 
 A script to get random value. TPM commands and responses are exchanged between the TPM and tpm20 service, device's TSS library is not involved at this stage. Eventually, the service will obtain a random value from the TPM.
@@ -117,7 +124,7 @@ $ tpm2_nvread 0x1c00002 -o rsa_ek.crt.der
 $ openssl x509 -inform der -in rsa_ek.crt.der -text
 ```
 
-Customize your own script in [tpm20/src/main/java/com/infineon/tpm20/script](tpm20/src/main/java/com/infineon/tpm20/script).
+
 
 # References
 
