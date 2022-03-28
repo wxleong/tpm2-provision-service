@@ -1,0 +1,24 @@
+eureka:
+  client:
+    enabled: false
+spring:
+  datasource:
+    url: jdbc:h2:mem:mockdb
+    driver-class-name: org.h2.Driver
+    username: admin
+    password: o4j8VW#*
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    # show generated SQL queries
+    show-sql: true
+    hibernate:
+      # database initialization setting
+      ddl-auto: create-drop
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+custom-prop:
+  thread-pool:
+    max: 3
+    timeout: 120000
