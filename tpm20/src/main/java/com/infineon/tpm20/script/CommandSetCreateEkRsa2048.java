@@ -33,9 +33,9 @@ public class CommandSetCreateEkRsa2048 extends CommandSet {
                     standardEKPolicy,
                     new TPMS_RSA_PARMS(new TPMT_SYM_DEF_OBJECT(TPM_ALG_ID.AES,  128, TPM_ALG_ID.CFB),
                             new TPMS_NULL_ASYM_SCHEME(),  2048, 0),
-                    new TPM2B_PUBLIC_KEY_RSA());
+                    new TPM2B_PUBLIC_KEY_RSA(new byte[256]));
 
-            CreatePrimaryResponse rsaEk = tpm.CreatePrimary(TPM_HANDLE.from(TPM_RH.OWNER),
+            CreatePrimaryResponse rsaEk = tpm.CreatePrimary(TPM_HANDLE.from(TPM_RH.ENDORSEMENT),
                     new TPMS_SENSITIVE_CREATE(), rsaEkTemplate, new byte[0], new TPMS_PCR_SELECTION[0]);
 
             /* persist the EK */
