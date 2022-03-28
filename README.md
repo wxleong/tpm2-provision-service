@@ -31,15 +31,8 @@ Build from scratch:
 ```
 $ git clone https://github.com/wxleong/tpm2-provision-service
 $ cd ~/tpm2-provision-service
-$ docker build -t tpm20:1.0 -f "./tpm20/Dockerfile" .
-$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it tpm20:1.0
-```
-
-Pull from Github Container Registry. The image supports linux/amd64, linux/arm/v7, and linux/arm64/v8.
-```
-$ docker pull ghcr.io/wxleong/tpm2-provision-service/tpm20:1.0
-$ docker images
-$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-service/tpm20:1.0
+$ docker build -t tpm20:local -f "./tpm20/Dockerfile" .
+$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it tpm20:local
 ```
 
 # Device Agent
@@ -60,7 +53,7 @@ $ docker version
 
 Download tpm20 docker image:
 ```
-$ docker pull --platform linux/arm/v7 ghcr.io/wxleong/tpm2-provision-service/tpm20:1.0
+$ docker pull --platform linux/arm/v7 ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v1.0
 $ docker images
 ```
 
@@ -86,7 +79,7 @@ $ sudo make install
 
 Launch the tpm20 image:
 ```
-$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-service/tpm20:1.0
+$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v1.0
 ```
 
 Build device agent:
@@ -96,7 +89,7 @@ $ cd ~/tpm2-provision-service/device
 $ gcc -Wall xfer.c -o xfer
 ```
 
-Finally, run the get-random script. TPM command and response will be exchanged in-between the TPM and tpm20 service, device's TSS library is not involved at this stage. Eventually, the service will obtain a random value from the TPM.
+Finally, run the get-random script. TPM commands and responses are exchanged between the TPM and tpm20 service, device's TSS library is not involved at this stage. Eventually, the service will obtain a random value from the TPM.
 ```
 $ sudo chmod a+rw /dev/tpmrm0
 $ chmod a+x provision-get-random.sh
@@ -111,7 +104,7 @@ $ chmod a+x provision.sh
 $ ./provision.sh create-ek-rsa2048
 ```
 
-Customize your own script in [tpm20\src\main\java\com\infineon\tpm20\script](tpm20\src\main\java\com\infineon\tpm20\script).
+Customize your own script in [tpm20\src\main\java\com\infineon\tpm20\script](tpm20/src/main/java/com/infineon/tpm20/script).
 
 # References
 
