@@ -53,12 +53,6 @@ $ sudo usermod -aG docker pi
 $ docker version
 ```
 
-Download tpm20 docker image:
-```
-$ docker pull --platform linux/arm/v7 ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v1.0
-$ docker images
-```
-
 Address a known [issue](https://github.com/AdoptOpenJDK/openjdk-docker/issues/469) by updating libseccomp to version 2.4.2 or newer:
 <!--
 ```
@@ -79,7 +73,13 @@ $ make -j$(nproc)
 $ sudo make install
 ```
 
-Launch the tpm20 image:
+Download tpm20 docker image:
+```
+$ docker pull --platform linux/arm/v7 ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v1.0
+$ docker images
+```
+
+Launch the image:
 ```
 $ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v1.0
 ```
@@ -91,20 +91,26 @@ $ cd ~/tpm2-provision-service/device
 $ gcc -Wall xfer.c -o xfer
 ```
 
-Finally, run the get-random script. TPM commands and responses are exchanged between the TPM and tpm20 service, device's TSS library is not involved at this stage. Eventually, the service will obtain a random value from the TPM.
+Example 1, the get-random script. TPM commands and responses are exchanged between the TPM and tpm20 service, device's TSS library is not involved at this stage. Eventually, the service will obtain a random value from the TPM.
 ```
 $ sudo chmod a+rw /dev/tpmrm0
 $ chmod a+x provision-get-random.sh
 $ ./provision-get-random.sh
 ```
 
-Create RSA2048 endorsement key and persist it at handle `0x81010001`:
+Example 2, a script to create the RSA2048 Endorsement Key (EK) and persist it at handle `0x81010001`:
 ```
 $ tpm2_clear -c p
 $ sudo chmod a+rw /dev/tpmrm0
 $ chmod a+x provision.sh
 $ ./provision.sh create-ek-rsa2048
 $ tpm2_readpublic -c 0x81010001
+```
+
+You may find the RSA2048 EK certificate at:
+```
+$ tpm2_nvread 0x1c00002 -o rsa_ek.crt.der
+$ openssl x509 -inform der -in rsa_ek.crt.der -text
 ```
 
 Customize your own script in [tpm20/src/main/java/com/infineon/tpm20/script](tpm20/src/main/java/com/infineon/tpm20/script).
