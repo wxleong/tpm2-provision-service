@@ -104,7 +104,7 @@ $ chmod a+x provision.sh
 $ ./provision.sh create-ek-rsa2048
 ```
 
-Customize your own script in [tpm20\src\main\java\com\infineon\tpm20\script](tpm20/src/main/java/com/infineon/tpm20/script).
+Customize your own script in [tpm20/src/main/java/com/infineon/tpm20/script](tpm20/src/main/java/com/infineon/tpm20/script).
 
 # References
 
