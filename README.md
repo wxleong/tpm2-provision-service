@@ -43,6 +43,8 @@ Tested on:
 - Raspberry Pi 4 Model B ([Raspberry Pi OS image](https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-11-08/2021-10-30-raspios-bullseye-armhf.zip))
 - [Iridium 9670 TPM 2.0 board](https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/)
 
+Setup your Raspberry Pi according to [[4]](#4).
+
 Install Docker on Raspberry Pi:
 ```
 $ curl -fsSL https://get.docker.com -o get-docker.sh
@@ -112,6 +114,7 @@ Customize your own script in [tpm20/src/main/java/com/infineon/tpm20/script](tpm
 <a id="1">[1] https://www.infineon.com/cms/en/product/security-smart-card-solutions/optiga-embedded-security-solutions/optiga-tpm/</a> <br>
 <a id="2">[2] https://start.spring.io/</a> <br>
 <a id="3">[3] https://maven.apache.org/</a> <br>
+<a id="4">[4] https://github.com/wxleong/tpm2-rpi4/</a> <br>
 
 # License
 
