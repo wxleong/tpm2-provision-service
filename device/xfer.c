@@ -38,9 +38,11 @@ int main(int argc, char **argv) {
         sscanf(argv[1] + (i*2), "%2hhx", cmd + i);
     }
 
-    /* access TPM device node */
+    /* access TPM device node,
+       tpmrm0 (with resource manager)
+       is not supported for now */
 
-    int fd = open ("/dev/tpmrm0", O_RDWR | O_NONBLOCK);
+    int fd = open ("/dev/tpm0", O_RDWR | O_NONBLOCK);
     if (fd < 0)
     {
         fprintf(stderr, "error: open\n");
