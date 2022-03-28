@@ -1,6 +1,6 @@
 # Introduction
 
-This is a TPM 2.0 provisioning service.
+Provisioning server for TPM 2.0.
 
 # Table of Contents
 
