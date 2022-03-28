@@ -59,9 +59,10 @@ public class RestApiControllerTests {
                 .expectStatus().isOk()
                 .expectBody(ScriptsResponse.class)
                 .returnResult();
-        Assertions.assertEquals(2, result.getResponseBody().getScripts().length);
+        Assertions.assertEquals(3, result.getResponseBody().getScripts().length);
         Assertions.assertEquals(SCRIPT_GET_RANDOM, result.getResponseBody().getScripts()[0]);
-        Assertions.assertEquals(SCRIPT_CREATE_EK_RSA2048, result.getResponseBody().getScripts()[1]);
+        Assertions.assertEquals(SCRIPT_EK_RSA2048_BASED_AUTHENTICATION, result.getResponseBody().getScripts()[1]);
+        Assertions.assertEquals(SCRIPT_CREATE_EK_RSA2048, result.getResponseBody().getScripts()[2]);
     }
 
     /**

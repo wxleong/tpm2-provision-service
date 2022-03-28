@@ -35,10 +35,6 @@ public class CAService {
         CAs = new HashMap<>();
     }
 
-    /**
-     * This is for dashboard display only. There are multiple valid root certs,
-     * so we randomly pick one.
-     */
     @PostConstruct
     private void CAService() throws Exception {
         try {
@@ -189,18 +185,12 @@ public class CAService {
         CAs.put(rootCa.getIssuerX500Principal().getName(), rootCa);
     }
 
-    /**
-     * Verify child & issuer certificate and remember the issuer certificate
-     * @param childCert
-     * @param issuerCert
-     * @throws Exception
-     */
-    private void verifyAndStoreIssuerCert(boolean toStore, X509Certificate childCert, X509Certificate issuerCert) throws Exception {
-        if (!childCert.getIssuerX500Principal().equals(issuerCert.getSubjectX500Principal()))
+    private void verifyAndStoreIssuerCert(boolean toStore, X509Certificate cert, X509Certificate issuerCert) throws Exception {
+        if (!cert.getIssuerX500Principal().equals(issuerCert.getSubjectX500Principal()))
             throw new Exception("certificate issuer mismatch");
-        childCert.checkValidity();
+        cert.checkValidity();
         issuerCert.checkValidity();
-        childCert.verify(issuerCert.getPublicKey());
+        cert.verify(issuerCert.getPublicKey());
         if (toStore)
             CAs.put(issuerCert.getSubjectX500Principal().getName(), issuerCert);
     }

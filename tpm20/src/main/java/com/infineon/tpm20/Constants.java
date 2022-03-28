@@ -25,6 +25,7 @@
 package com.infineon.tpm20;
 
 import com.infineon.tpm20.script.CommandSetCreateEkRsa2048;
+import com.infineon.tpm20.script.CommandSetEkRsa2048BasedAuth;
 import com.infineon.tpm20.script.CommandSetGetRandom;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -44,9 +45,11 @@ public class Constants {
     /* collection of TPM provisioning script */
     public static final String SCRIPT_GET_RANDOM = CommandSetGetRandom.name;
     public static final String SCRIPT_CREATE_EK_RSA2048 = CommandSetCreateEkRsa2048.name;
+    public static final String SCRIPT_EK_RSA2048_BASED_AUTHENTICATION = CommandSetEkRsa2048BasedAuth.name;
     public Map<String, Class<?>> scripts  = new HashMap<>() {{
         put(SCRIPT_GET_RANDOM, CommandSetGetRandom.class);
         put(SCRIPT_CREATE_EK_RSA2048, CommandSetCreateEkRsa2048.class);
+        put(SCRIPT_EK_RSA2048_BASED_AUTHENTICATION, CommandSetEkRsa2048BasedAuth.class);
     }};
 
     @Value("${management.server.port}")
