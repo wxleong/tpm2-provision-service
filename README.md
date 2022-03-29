@@ -31,7 +31,7 @@ Provisioning server for TPM 2.0.
 
 # Prepare Docker Image
 
-You may launch the service using docker.
+You may launch the service on docker.
 
 Build from scratch:
 ```
