@@ -11,4 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ResultEkBasedAuth implements AbstractResult {
     private Boolean passed;
+    private String ekPub;
 }

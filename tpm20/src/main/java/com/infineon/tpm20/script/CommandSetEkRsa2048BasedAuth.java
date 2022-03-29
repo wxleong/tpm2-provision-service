@@ -4,6 +4,7 @@ import com.google.common.primitives.Bytes;
 import com.infineon.tpm20.model.v1.session.ResultCreateEk;
 import com.infineon.tpm20.model.v1.session.ResultEkBasedAuth;
 import com.infineon.tpm20.service.CAService;
+import com.infineon.tpm20.util.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -71,7 +72,7 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
             try {
                 readAndVerifyEkCert(tpm, ekPub);
             } catch (Exception e) {
-                setResult(new ResultEkBasedAuth(false));
+                setResult(new ResultEkBasedAuth(false, ""));
                 return;
             }
 
@@ -108,7 +109,7 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
                     new byte[0], new byte[0], 0);
             byte[] policyDigest = tpm.PolicyGetDigest(policySession.handle);
             if (!Arrays.equals(policyDigest, standardEKPolicy)) {
-                setResult(new ResultEkBasedAuth(false));
+                setResult(new ResultEkBasedAuth(false, ""));
                 return;
             }
             tpm._withSessions(TPM_HANDLE.pwSession(new byte[0]), policySession.handle);
@@ -117,10 +118,12 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
 
             /* verify the challenge */
 
-            if (Arrays.equals(challenge, recoveredChallenge))
-                setResult(new ResultEkBasedAuth(true));
-            else
-                setResult(new ResultEkBasedAuth(false));
+            if (Arrays.equals(challenge, recoveredChallenge)) {
+                TPM2B_PUBLIC_KEY_RSA ekRsaPub = (TPM2B_PUBLIC_KEY_RSA) ekPub.unique;
+                byte[] baEkRsaPub = ekRsaPub.buffer;
+                setResult(new ResultEkBasedAuth(true, Utility.byteArrayToBase64(baEkRsaPub)));
+            } else
+                setResult(new ResultEkBasedAuth(false, ""));
 
         } catch (Exception e) {
             //e.printStackTrace();

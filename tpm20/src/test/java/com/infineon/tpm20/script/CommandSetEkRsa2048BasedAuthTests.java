@@ -72,5 +72,6 @@ public class CommandSetEkRsa2048BasedAuthTests {
         /* verify the execution is successful */
         ResultEkBasedAuth resultEkBasedAuth = (ResultEkBasedAuth) commandSetEkRsa2048BasedAuth.getResult();
         Assertions.assertTrue(resultEkBasedAuth.getPassed());
+        Assertions.assertEquals(256, Utility.base64ToByteArray(resultEkBasedAuth.getEkPub()).length);
     }
 }
