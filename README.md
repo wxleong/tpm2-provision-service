@@ -87,7 +87,7 @@ $ docker images
 
 Launch the image:
 ```
-$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v1.0
+$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v2.0
 ```
 
 Build device agent:
