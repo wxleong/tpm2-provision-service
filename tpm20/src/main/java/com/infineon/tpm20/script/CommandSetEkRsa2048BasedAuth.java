@@ -35,6 +35,11 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
             byte[] standardEKPolicy = Helpers.fromHex("837197674484b3f81a90cc8d46a5d724fd52d76e06520b64f2a1da1b331469aa");
             TPMT_PUBLIC ekPub;
 
+            /* clear loaded session */
+
+            cleanSlots(tpm, TPM_HT.LOADED_SESSION);
+            cleanSlots(tpm, TPM_HT.TRANSIENT);
+
             /* check EK persistent handle exist */
 
             ReadPublicResponse rpResp = tpm._allowErrors().ReadPublic(ekPersistentHandle);

@@ -19,6 +19,11 @@ public class CommandSetCreateEkRsa2048 extends CommandSet {
         try {
             TPM_HANDLE ekPersistentHandle = TPM_HANDLE.persistent(0x00010001); // 0x81010001
 
+            /* clear loaded session */
+
+            cleanSlots(tpm, TPM_HT.LOADED_SESSION);
+            cleanSlots(tpm, TPM_HT.TRANSIENT);
+
             /* check EK persistent handle exist */
 
             ReadPublicResponse rpResp = tpm._allowErrors().ReadPublic(ekPersistentHandle);
