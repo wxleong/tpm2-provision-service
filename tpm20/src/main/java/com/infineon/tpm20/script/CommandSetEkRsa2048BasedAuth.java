@@ -1,9 +1,12 @@
 package com.infineon.tpm20.script;
 
+import com.google.common.primitives.Bytes;
 import com.infineon.tpm20.model.v1.session.ResultCreateEk;
 import com.infineon.tpm20.model.v1.session.ResultEkBasedAuth;
 import com.infineon.tpm20.service.CAService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 import tss.Helpers;
 import tss.Tpm;
 import tss.Tss;
@@ -16,10 +19,14 @@ import java.util.Arrays;
 
 public class CommandSetEkRsa2048BasedAuth extends CommandSet {
 
-    @Autowired
-    private CAService caService;
-
     public static String name = "ek-rsa2048-based-auth";
+
+    public CAService caService;
+
+    public CommandSetEkRsa2048BasedAuth(ApplicationContext applicationContext) {
+        super(applicationContext);
+        caService = getApplicationContext().getBean(CAService.class);
+    }
 
     @Override
     public void run(Tpm tpm) {
@@ -57,8 +64,8 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
 
             try {
                 readAndVerifyEkCert(tpm);
-                check EK pub == EkCert pub
-                create test with mock function
+                //check EK pub == EkCert pub
+                //create test with mock function
             } catch (Exception e) {
                 setResult(new ResultEkBasedAuth(false));
                 return;
@@ -105,6 +112,7 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
                     credential.CredentialBlob, credential.Secret);
 
             /* verify the challenge */
+
             if (Arrays.equals(challenge, recoveredChallenge))
                 setResult(new ResultEkBasedAuth(true));
             else
@@ -118,11 +126,27 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
 
     private void readAndVerifyEkCert(Tpm tpm) throws Exception {
 
+        byte[] baEkCert = new byte[0];
+
+        /* read TPM2_PT_NV_BUFFER_MAX */
+
+        GetCapabilityResponse cap = tpm.GetCapability(TPM_CAP.TPM_PROPERTIES, TPM_PT.NV_BUFFER_MAX.toInt(), 1);
+        TPML_TAGGED_TPM_PROPERTY prop = (TPML_TAGGED_TPM_PROPERTY) (cap.capabilityData);
+        int nv_buffer_max = prop.tpmProperty[0].value;
+
         /* read EK (RSA2048) certificate */
 
-        TPM_HANDLE nvHandle = TPM_HANDLE.NV(0x1c00002);
+        TPM_HANDLE nvHandle = TPM_HANDLE.NV(0xC00002); // 0x1C00002
         NV_ReadPublicResponse nvPub = tpm.NV_ReadPublic(nvHandle);
-        byte[] baEkCert = tpm.NV_Read(nvHandle, nvHandle, nvPub.nvPublic.dataSize,  0);
+        int dataSize = nvPub.nvPublic.dataSize;
+        int offset = 0;
+        do {
+            int size = (dataSize <= nv_buffer_max) ? dataSize : nv_buffer_max;
+            byte[] temp = tpm._allowErrors().NV_Read(nvHandle, nvHandle, size, offset);
+            baEkCert = Bytes.concat(baEkCert, temp);
+            dataSize -= size;
+            offset += size;
+        } while (dataSize > 0);
 
         /* verify the certificate */
 

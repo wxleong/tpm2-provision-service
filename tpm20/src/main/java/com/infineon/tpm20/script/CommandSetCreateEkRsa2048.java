@@ -1,6 +1,7 @@
 package com.infineon.tpm20.script;
 
 import com.infineon.tpm20.model.v1.session.ResultCreateEk;
+import org.springframework.context.ApplicationContext;
 import tss.Helpers;
 import tss.Tpm;
 import tss.tpm.*;
@@ -8,6 +9,10 @@ import tss.tpm.*;
 public class CommandSetCreateEkRsa2048 extends CommandSet {
 
     public static String name = "create-ek-rsa2048";
+
+    public CommandSetCreateEkRsa2048(ApplicationContext applicationContext) {
+        super(applicationContext);
+    }
 
     @Override
     public void run(Tpm tpm) {

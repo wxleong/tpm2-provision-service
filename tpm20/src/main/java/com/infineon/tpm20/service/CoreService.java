@@ -8,7 +8,9 @@ import com.infineon.tpm20.script.CommandSet;
 import com.infineon.tpm20.script.CommandSetRunnable;
 import com.infineon.tpm20.util.Utility;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,6 +26,8 @@ public class CoreService {
     private ThreadService threadService;
     @Autowired
     private SessionRepoService sessionRepoService;
+    @Autowired
+    private ApplicationContext applicationContext;
 
     public ScriptsResponse processApiV1Scripts(HttpServletResponse servletResponse) {
 
@@ -58,7 +62,7 @@ public class CoreService {
                 return new StartResponse("", 0, "", true, "Provisioning script not found.");
             }
 
-            CommandSet commandSet = (CommandSet) c.getConstructor().newInstance();
+            CommandSet commandSet = (CommandSet) c.getConstructor(ApplicationContext.class).newInstance(applicationContext);
             runnable = new CommandSetRunnable(commandSet, constants.THREAD_POOL_TIMEOUT);
 
             if (runnable != null) {
