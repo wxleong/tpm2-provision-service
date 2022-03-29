@@ -15,6 +15,7 @@ import tss.tpm.*;
 import java.io.ByteArrayInputStream;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
 public class CommandSetEkRsa2048BasedAuth extends CommandSet {
@@ -68,9 +69,7 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
             }
 
             try {
-                readAndVerifyEkCert(tpm);
-                //check EK pub == EkCert pub
-                //create test with mock function
+                readAndVerifyEkCert(tpm, ekPub);
             } catch (Exception e) {
                 setResult(new ResultEkBasedAuth(false));
                 return;
@@ -129,7 +128,7 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
         }
     }
 
-    private void readAndVerifyEkCert(Tpm tpm) throws Exception {
+    public void readAndVerifyEkCert(Tpm tpm, TPMT_PUBLIC ekPub) throws Exception {
 
         byte[] baEkCert = new byte[0];
 
@@ -158,5 +157,19 @@ public class CommandSetEkRsa2048BasedAuth extends CommandSet {
         CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
         X509Certificate ekCert = (X509Certificate) certFactory.generateCertificate(new ByteArrayInputStream(baEkCert));
         caService.verify(ekCert);
+
+        /* verify certificate pub == ekPub */
+
+        TPM2B_PUBLIC_KEY_RSA ekRsaPub = (TPM2B_PUBLIC_KEY_RSA) ekPub.unique;
+        byte[] baEkRsaPub = ekRsaPub.buffer;
+
+        RSAPublicKey rsaPublicKey = (RSAPublicKey) ekCert.getPublicKey();
+        byte[] baCertPub = rsaPublicKey.getModulus().toByteArray();
+        byte[] baCertPub2 = baCertPub;
+        if (baCertPub[0] == 0)
+            baCertPub2 = Arrays.copyOfRange(baCertPub, 1, baCertPub.length);
+
+        if (!Arrays.equals(baCertPub2, baEkRsaPub))
+            throw new Exception("EK certificate public key is not equal to EK public key.");
     }
 }
