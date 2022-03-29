@@ -6,6 +6,7 @@ Provisioning server for TPM 2.0.
 
 - **[Prerequisites](#prerequisites)**
 - **[Endpoints](#endpoints)**
+- **[Project tpm20](#project-tpm20)**
 - **[Prepare Docker Image](#prepare-docker-image)**
 - **[Device Agent](#device-agent)**
 - **[References](#references)**
@@ -23,7 +24,14 @@ Provisioning server for TPM 2.0.
 |---|---|---|
 | TPM20 | Public:<ul><li>http://localhost:1014/api</li></ul>Management:<ul><li>http://localhost:1015/actuator</li><li>http://localhost:1015/actuator/openapi</li><li>http://localhost:1015/actuator/swaggerui</li></ul> | |
 
+# Project tpm20
+
+- You may modify the project [tpm20](tpm20) using any Java IDE that supports Maven project (e.g., IntelliJ)
+- A Windows machine with built-in TPM 2.0 is needed for most of the JUnit tests. Find your TPM version by Windows+R then input `tpm.msc`.
+
 # Prepare Docker Image
+
+Alternatively, you may launch the service using docker.
 
 Build from scratch:
 ```
