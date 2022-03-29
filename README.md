@@ -81,7 +81,7 @@ $ sudo make install
 
 Download tpm20 docker image:
 ```
-$ docker pull --platform linux/arm/v7 ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v1.0
+$ docker pull --platform linux/arm/v7 ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v2.0
 $ docker images
 ```
 
