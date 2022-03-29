@@ -112,6 +112,11 @@ $ sudo chmod a+rw /dev/tpm0
 $ chmod a+x get-random.sh
 $ ./get-random.sh
 ```
+Or:
+```
+$ chmod a+x provision.sh
+$ ./provision.sh get-random
+```
 
 ## Example 2
 
