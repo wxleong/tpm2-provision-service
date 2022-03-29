@@ -27,11 +27,11 @@ Provisioning server for TPM 2.0.
 # Project tpm20
 
 - You may modify the project [tpm20](tpm20) using any Java IDE that supports Maven project (e.g., IntelliJ)
-- A Windows machine with built-in TPM 2.0 is needed for most of the JUnit tests. Find your TPM version by Windows+R then input `tpm.msc`.
+- The project test suite requires Windows machine with built-in TPM 2.0. Find this information by Windows+R then input `tpm.msc`.
 
 # Prepare Docker Image
 
-Alternatively, you may launch the service using docker.
+You may launch the service using docker.
 
 Build from scratch:
 ```
@@ -97,40 +97,46 @@ $ cd ~/tpm2-provision-service/device
 $ gcc -Wall xfer.c -o xfer
 ```
 
-List all available scripts:
+List supported scripts:
 ```
 $ curl http://localhost:1014/api/v1/scripts
 ```
 
-Alternatively, develop your own script [here](tpm20/src/main/java/com/infineon/tpm20/script).
+Alternatively, develop your own script and drop it [here](tpm20/src/main/java/com/infineon/tpm20/script).
 
 ## Example 1
 
 A script to get random value. TPM commands and responses are exchanged between the TPM and tpm20 service, device's TSS library is not involved at this stage. Eventually, the service will obtain a random value from the TPM.
 ```
-$ sudo chmod a+rw /dev/tpmrm0
+$ sudo chmod a+rw /dev/tpm0
 $ chmod a+x get-random.sh
 $ ./get-random.sh
 ```
 
 ## Example 2
 
-A script to create the RSA2048 Endorsement Key (EK) and persist it at handle `0x81010001`:
+A script to create an RSA2048 Endorsement Key (EK) and persist it at handle `0x81010001`:
 ```
-$ tpm2_clear -c p
-$ sudo chmod a+rw /dev/tpmrm0
+$ sudo chmod a+rw /dev/tpm0
 $ chmod a+x provision.sh
 $ ./provision.sh create-ek-rsa2048
 $ tpm2_readpublic -c 0x81010001
 ```
 
-You may find the RSA2048 EK certificate at:
+You may find the associated EK certificate at:
 ```
 $ tpm2_nvread 0x1c00002 -o rsa_ek.crt.der
 $ openssl x509 -inform der -in rsa_ek.crt.der -text
 ```
 
+## Example 3
 
+A script to perform device authentication, capable of proving a device contains an authentic TPM:
+```
+$ sudo chmod a+rw /dev/tpm0
+$ chmod a+x provision.sh
+$ ./provision.sh ek-rsa2048-based-auth
+```
 
 # References
 
