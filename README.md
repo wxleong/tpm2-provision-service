@@ -175,7 +175,11 @@ $ ./provision.sh ek-rsa2048-based-auth
 
 <tr></tr>
 <tr>
-<td>clean</td>
+<td>
+
+clean
+
+</td>
 <td>
 
 ```
