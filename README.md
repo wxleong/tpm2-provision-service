@@ -100,6 +100,8 @@ $ gcc -Wall xfer.c -o xfer
 
 # Provisioning Script Examples
 
+TPM commands and responses are exchanged between the TPM and tpm20 service, TSS library is not needed on the device.
+
 Getting a list of supported scripts:
 ```
 $ curl http://localhost:1014/api/v1/scripts
@@ -109,7 +111,7 @@ Alternatively, develop your own script and drop it [here](tpm20/src/main/java/co
 
 ## Get Random
 
-A script to get random value. TPM commands and responses are exchanged between the TPM and tpm20 service, device's TSS library is not involved at this stage. Eventually, the service will obtain a random value from the TPM.
+A script to get random value from TPM
 ```
 $ sudo chmod a+rw /dev/tpm0
 $ chmod a+x get-random.sh
