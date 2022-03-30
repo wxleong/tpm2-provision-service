@@ -116,11 +116,11 @@ $ curl http://localhost:1014/api/v1/scripts
 
 | Script | Command | Info |
 |---|---|---|
-| `get-random` | <pre>$ ./get-random.sh</pre> or <pre>$ ./provision.sh get-random</pre> | Read random value from TPM. |
-| `create-ek-rsa2048` | <pre>$ ./provision.sh create-ek-rsa2048<br>$ tpm2_readpublic -c 0x81010001</pre>You may find the associated EK certificate at:<pre>$ tpm2_nvread 0x1c00002 -o rsa_ek.crt.der<br>$ openssl x509 -inform der -in rsa_ek.crt.der -text</pre> | create an RSA2048 Endorsement Key (EK) and persist it at handle `0x81010001` |
-| `ek-rsa2048-based-auth` | <pre>$ ./provision.sh ek-rsa2048-based-auth</pre> | perform device authentication, capable of proving a device contains an authentic TPM. |
-| `clean` | <pre>$ ./provision.sh clean</pre> | Evict persistent handles: `0x81010001`, `0x81000100`, `0x81000101` |
-| `...` | <pre>$ ./provision.sh ...</pre> | |
+| get-random | <pre>$ ./get-random.sh</pre> or <pre>$ ./provision.sh get-random</pre> | Read random value from TPM. |
+| create-ek-rsa2048 | <pre>$ ./provision.sh create-ek-rsa2048<br>$ tpm2_readpublic -c 0x81010001</pre>You may find the associated EK certificate at:<pre>$ tpm2_nvread 0x1c00002 -o rsa_ek.crt.der<br>$ openssl x509 -inform der -in rsa_ek.crt.der -text</pre> | create an RSA2048 Endorsement Key (EK) and persist it at handle `0x81010001` |
+| ek-rsa2048-based-auth | <pre>$ ./provision.sh ek-rsa2048-based-auth</pre> | perform device authentication, capable of proving a device contains an authentic TPM. |
+| clean | <pre>$ ./provision.sh clean</pre> | Evict persistent handles: 0x81010001, 0x81000100, 0x81000101 |
+| ... | <pre>$ ./provision.sh ...</pre> | |
 
 Still can't find what you are looking for? Develop your own script and drop it in [here](tpm20/src/main/java/com/infineon/tpm20/script).
 
