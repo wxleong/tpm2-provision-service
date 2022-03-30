@@ -122,7 +122,7 @@ $ curl http://localhost:1014/api/v1/scripts
 | `clean` | <pre>$ ./provision.sh clean</pre> | Evict persistent handles: `0x81010001`, `0x81000100`, `0x81000101` |
 | `...` | <pre>$ ./provision.sh ...</pre> | |
 
-Still can't find what you are looking for? Develop your own script and drop it [here](tpm20/src/main/java/com/infineon/tpm20/script).
+Still can't find what you are looking for? Develop your own script and drop it in [here](tpm20/src/main/java/com/infineon/tpm20/script).
 
 # References
 
