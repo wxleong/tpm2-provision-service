@@ -98,6 +98,13 @@ $ cd ~/tpm2-provision-service/device
 $ gcc -Wall xfer.c -o xfer
 ```
 
+Prepare your environment:
+```
+$ cd ~/tpm2-provision-service/device
+$ sudo chmod a+rw /dev/tpm0
+$ chmod a+x *.sh
+```
+
 # Provisioning Script Examples
 
 TPM commands and responses are exchanged between the TPM and tpm20 service, TSS library is not needed on the device.
@@ -109,44 +116,14 @@ $ curl http://localhost:1014/api/v1/scripts
 
 Alternatively, develop your own script and drop it [here](tpm20/src/main/java/com/infineon/tpm20/script).
 
-## Get Random
 
-A script to get random value from TPM
-```
-$ sudo chmod a+rw /dev/tpm0
-$ chmod a+x get-random.sh
-$ ./get-random.sh
-```
-Or:
-```
-$ chmod a+x provision.sh
-$ ./provision.sh get-random
-```
-
-## Create RSA2048 Endorsement Key
-
-A script to create an RSA2048 Endorsement Key (EK) and persist it at handle `0x81010001`:
-```
-$ sudo chmod a+rw /dev/tpm0
-$ chmod a+x provision.sh
-$ ./provision.sh create-ek-rsa2048
-$ tpm2_readpublic -c 0x81010001
-```
-
-You may find the associated EK certificate at:
-```
-$ tpm2_nvread 0x1c00002 -o rsa_ek.crt.der
-$ openssl x509 -inform der -in rsa_ek.crt.der -text
-```
-
-## EK Based Authentication
-
-A script to perform device authentication, capable of proving a device contains an authentic TPM:
-```
-$ sudo chmod a+rw /dev/tpm0
-$ chmod a+x provision.sh
-$ ./provision.sh ek-rsa2048-based-auth
-```
+| Script | Command | Info |
+|---|---|---|
+| `get-random` | <pre>$ ./get-random.sh</pre> or <pre>$ ./provision.sh get-random</pre> | Read random value from TPM. |
+| `create-ek-rsa2048` | <pre>$ ./provision.sh create-ek-rsa2048<br>$ tpm2_readpublic -c 0x81010001</pre>You may find the associated EK certificate at:<pre>$ tpm2_nvread 0x1c00002 -o rsa_ek.crt.der<br>$ openssl x509 -inform der -in rsa_ek.crt.der -text</pre> | create an RSA2048 Endorsement Key (EK) and persist it at handle `0x81010001` |
+| `ek-rsa2048-based-auth` | <pre>$ ./provision.sh ek-rsa2048-based-auth</pre> | perform device authentication, capable of proving a device contains an authentic TPM. |
+| `clean` | <pre>$ ./provision.sh clean</pre> | Evict persistent handles: `0x81010001`, `0x81000100`, `0x81000101` |
+| `...` | <pre>$ ./provision.sh ...</pre> | |
 
 # References
 
