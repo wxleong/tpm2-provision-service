@@ -25,6 +25,7 @@ script=get-random
 curl -k -d \
 "{ \
 \"script\" : \"${script}\" \
+\"args\" : {\"bytes\":8} \
 }" \
 -H "Content-Type: application/json" -X POST ${PROVISION_SERVICE_URL}/api/v1/session/start >session-start-resp.json 2>/dev/null
 

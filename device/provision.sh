@@ -2,6 +2,7 @@
 
 PROVISION_SERVICE_URL="http://localhost:1014"
 SCRIPT_NAME="${1}"
+ARGS="${2}"
 
 #
 # Dependencies check
@@ -29,6 +30,7 @@ fi
 curl -k -d \
 "{ \
 \"script\" : \"${SCRIPT_NAME}\" \
+\"args\" : \"${ARGS}\" \
 }" \
 -H "Content-Type: application/json" -X POST ${PROVISION_SERVICE_URL}/api/v1/session/start >session-start-resp.json 2>/dev/null
 
