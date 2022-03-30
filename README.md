@@ -128,7 +128,7 @@ $ curl http://localhost:1014/api/v1/scripts
 <td>
 
 ```
-$ ./get-random.sh</pre>
+$ ./get-random.sh
 ```
 or
 ```
