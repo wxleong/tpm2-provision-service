@@ -6,7 +6,7 @@ import tss.Helpers;
 import tss.Tpm;
 import tss.tpm.*;
 
-public class CommandSetCreateEkRsa2048 extends CommandSet {
+public class CommandSetCreateEkRsa2048 extends AbstractCommandSet {
 
     public static String name = "create-ek-rsa2048";
 

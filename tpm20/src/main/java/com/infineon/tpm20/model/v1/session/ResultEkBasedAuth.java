@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultEkBasedAuth implements AbstractResult {
+public class ResultEkBasedAuth implements IResult {
     private Boolean passed;
     private String ekPub;
 }

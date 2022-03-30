@@ -5,7 +5,7 @@ import com.infineon.tpm20.util.Utility;
 import org.springframework.context.ApplicationContext;
 import tss.Tpm;
 
-public class CommandSetGetRandom extends CommandSet {
+public class CommandSetGetRandom extends AbstractCommandSet {
 
     public static String name = "get-random";
 

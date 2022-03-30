@@ -16,7 +16,7 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
-public class CommandSetKeyRsa2048CreateAndSign extends CommandSet {
+public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
 
     public static String name = "key-rsa2048-create-and-sign";
 

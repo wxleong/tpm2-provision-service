@@ -1,13 +1,10 @@
 package com.infineon.tpm20.script;
 
 import com.google.common.primitives.Bytes;
-import com.infineon.tpm20.model.v1.session.ResultCreateEk;
 import com.infineon.tpm20.model.v1.session.ResultEkBasedAuth;
 import com.infineon.tpm20.service.CAService;
 import com.infineon.tpm20.util.Utility;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 import tss.Helpers;
 import tss.Tpm;
 import tss.Tss;
@@ -19,7 +16,7 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
-public class CommandSetEkRsa2048BasedAuth extends CommandSet {
+public class CommandSetEkRsa2048BasedAuth extends AbstractCommandSet {
 
     public static String name = "ek-rsa2048-based-auth";
 

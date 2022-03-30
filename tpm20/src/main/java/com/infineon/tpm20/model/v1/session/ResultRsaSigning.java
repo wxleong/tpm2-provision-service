@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultRsaSigning implements AbstractResult {
+public class ResultRsaSigning implements IResult {
     private String ekPub;
     private String pub;
     private String sig;

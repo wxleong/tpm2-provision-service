@@ -1,18 +1,18 @@
 package com.infineon.tpm20.script;
 
-import com.infineon.tpm20.model.v1.session.AbstractResult;
+import com.infineon.tpm20.model.v1.session.IResult;
 import tss.TpmSyncRunnable;
 
 public class CommandSetRunnable extends TpmSyncRunnable  {
 
-    private CommandSet commandSet;
+    private AbstractCommandSet abstractCommandSet;
 
-    public CommandSetRunnable(CommandSet commandSet, int timeout) {
-        super(commandSet, timeout);
-        this.commandSet = commandSet;
+    public CommandSetRunnable(AbstractCommandSet abstractCommandSet, int timeout) {
+        super(abstractCommandSet, timeout);
+        this.abstractCommandSet = abstractCommandSet;
     }
 
-    public AbstractResult getResult() {
-        return commandSet.getResult();
+    public IResult getResult() {
+        return abstractCommandSet.getResult();
     }
 }

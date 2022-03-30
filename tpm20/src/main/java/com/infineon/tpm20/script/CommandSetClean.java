@@ -1,12 +1,10 @@
 package com.infineon.tpm20.script;
 
-import com.infineon.tpm20.model.v1.session.ResultGetRandom;
-import com.infineon.tpm20.util.Utility;
 import org.springframework.context.ApplicationContext;
 import tss.Tpm;
 import tss.tpm.*;
 
-public class CommandSetClean extends CommandSet {
+public class CommandSetClean extends AbstractCommandSet {
 
     public static String name = "clean";
 

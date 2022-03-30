@@ -4,11 +4,10 @@ import com.infineon.tpm20.Constants;
 import com.infineon.tpm20.entity.Session;
 import com.infineon.tpm20.model.v1.scripts.ScriptsResponse;
 import com.infineon.tpm20.model.v1.session.*;
-import com.infineon.tpm20.script.CommandSet;
+import com.infineon.tpm20.script.AbstractCommandSet;
 import com.infineon.tpm20.script.CommandSetRunnable;
 import com.infineon.tpm20.util.Utility;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -62,8 +61,8 @@ public class CoreService {
                 return new StartResponse("", 0, "", true, "Provisioning script not found.");
             }
 
-            CommandSet commandSet = (CommandSet) c.getConstructor(ApplicationContext.class).newInstance(applicationContext);
-            runnable = new CommandSetRunnable(commandSet, constants.THREAD_POOL_TIMEOUT);
+            AbstractCommandSet abstractCommandSet = (AbstractCommandSet) c.getConstructor(ApplicationContext.class).newInstance(applicationContext);
+            runnable = new CommandSetRunnable(abstractCommandSet, constants.THREAD_POOL_TIMEOUT);
 
             if (runnable != null) {
                 if ((thread = threadService.execute(runnable)) == null) {
@@ -148,7 +147,7 @@ public class CoreService {
                 if (runnable.isEnded()) {
                     if (runnable.isEndedOk()) {
                         /* update repository */
-                        AbstractResult result = runnable.getResult();
+                        IResult result = runnable.getResult();
                         if (result != null) {
                             String json = Utility.objectToJson(result);
                             session.setResult(json);

@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultCreateEk implements AbstractResult {
+public class ResultCreateEk implements IResult {
     private String handle;
 }

@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultGetRandom implements AbstractResult {
+public class ResultGetRandom implements IResult {
     private String random;
 }
