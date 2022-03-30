@@ -23,13 +23,21 @@ public class Utility {
         return new String(ba);
     }
 
-    public static String objectToJson(Object obj) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.writeValueAsString(obj);
+    public static String objectToJson(Object obj) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.writeValueAsString(obj);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
-    public static <T> T JsonToObject(String json, Class<T> className) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(json, className);
+    public static <T> T JsonToObject(String json, Class<T> className) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(json, className);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

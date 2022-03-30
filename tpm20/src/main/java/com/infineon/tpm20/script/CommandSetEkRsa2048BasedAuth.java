@@ -22,8 +22,8 @@ public class CommandSetEkRsa2048BasedAuth extends AbstractCommandSet {
 
     public CAService caService;
 
-    public CommandSetEkRsa2048BasedAuth(ApplicationContext applicationContext) {
-        super(applicationContext);
+    public CommandSetEkRsa2048BasedAuth(ApplicationContext applicationContext, String args) {
+        super(applicationContext, null);
         caService = getApplicationContext().getBean(CAService.class);
     }
 

@@ -35,7 +35,7 @@ public class CommandSetCreateEkRsa2048Tests {
     @Test
     void test1() {
         SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
-        String json = sessionManager.executeScript(SCRIPT_CREATE_EK_RSA2048);
+        String json = sessionManager.executeScript(SCRIPT_CREATE_EK_RSA2048, null);
         try {
             ResultCreateEk resultCreateEk = Utility.JsonToObject(json, ResultCreateEk.class);
             Assertions.assertEquals("0x81010001", resultCreateEk.getHandle());

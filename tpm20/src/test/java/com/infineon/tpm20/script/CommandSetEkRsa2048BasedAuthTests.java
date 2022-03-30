@@ -47,7 +47,7 @@ public class CommandSetEkRsa2048BasedAuthTests {
              a primitive/primitive wrapper value, or an empty collection, as appropriate
            - Mockito.spy(): all methods are original (CallRealMethod), unless specify.
          */
-        CommandSetEkRsa2048BasedAuth commandSetEkRsa2048BasedAuthOrig = new CommandSetEkRsa2048BasedAuth(applicationContext);
+        CommandSetEkRsa2048BasedAuth commandSetEkRsa2048BasedAuthOrig = new CommandSetEkRsa2048BasedAuth(applicationContext, null);
         CommandSetEkRsa2048BasedAuth commandSetEkRsa2048BasedAuth = Mockito.spy(commandSetEkRsa2048BasedAuthOrig);
 
         /*

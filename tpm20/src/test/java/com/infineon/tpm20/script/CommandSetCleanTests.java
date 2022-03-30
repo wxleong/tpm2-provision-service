@@ -35,7 +35,7 @@ public class CommandSetCleanTests {
     @Test
     void test1() {
         SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
-        String json = sessionManager.executeScript(SCRIPT_CLEAN);
+        String json = sessionManager.executeScript(SCRIPT_CLEAN, null);
         Assertions.assertEquals("", json);
     }
 }

@@ -9,7 +9,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StartRequest {
-    private String script;
-    private String args;
+public class ArgsGetRandom implements IArgs {
+    private int bytes;
 }

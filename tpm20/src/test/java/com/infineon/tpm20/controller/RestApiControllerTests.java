@@ -81,7 +81,7 @@ public class RestApiControllerTests {
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_START)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(new StartRequest("invalid-script")), StartRequest.class)
+                .body(Mono.just(new StartRequest("invalid-script", null)), StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -105,12 +105,15 @@ public class RestApiControllerTests {
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_START)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM)), StartRequest.class)
+                .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM,
+                                                 Utility.objectToJson(new ArgsGetRandom(8)))),
+                                StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody(StartResponse.class)
                 .returnResult();
+
         Assertions.assertTrue(result.getResponseBody().getCmd().length() > 0);
         Assertions.assertEquals(result.getResponseBody().getSeq(), 0);
         Assertions.assertEquals(result.getResponseBody().getEmsg(), "");
@@ -151,7 +154,9 @@ public class RestApiControllerTests {
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_START)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM)), StartRequest.class)
+                .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM,
+                                Utility.objectToJson(new ArgsGetRandom(8)))),
+                      StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -223,7 +228,9 @@ public class RestApiControllerTests {
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_START)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM)), StartRequest.class)
+                .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM,
+                                Utility.objectToJson(new ArgsGetRandom(8)))),
+                      StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -326,7 +333,9 @@ public class RestApiControllerTests {
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_START)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM)), StartRequest.class)
+                .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM,
+                                Utility.objectToJson(new ArgsGetRandom(8)))),
+                      StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -430,7 +439,7 @@ public class RestApiControllerTests {
     @Test
     void processApiV1SessionStop1() {
         SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
-        String json = sessionManager.executeScript(SCRIPT_GET_RANDOM);
+        String json = sessionManager.executeScript(SCRIPT_GET_RANDOM, Utility.objectToJson(new ArgsGetRandom(8)));
         try {
             ResultGetRandom resultGetRandom = Utility.JsonToObject(json, ResultGetRandom.class);
             byte[] random = Utility.base64ToByteArray(resultGetRandom.getRandom());
@@ -473,7 +482,9 @@ public class RestApiControllerTests {
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_START)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM)), StartRequest.class)
+                .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM,
+                                Utility.objectToJson(new ArgsGetRandom(8)))),
+                      StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)

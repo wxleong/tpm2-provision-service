@@ -22,8 +22,8 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
 
     public CAService caService;
 
-    public CommandSetKeyRsa2048CreateAndSign(ApplicationContext applicationContext) {
-        super(applicationContext);
+    public CommandSetKeyRsa2048CreateAndSign(ApplicationContext applicationContext, String args) {
+        super(applicationContext, null);
         caService = getApplicationContext().getBean(CAService.class);
     }
 

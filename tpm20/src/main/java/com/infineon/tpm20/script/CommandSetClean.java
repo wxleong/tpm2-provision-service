@@ -8,8 +8,8 @@ public class CommandSetClean extends AbstractCommandSet {
 
     public static String name = "clean";
 
-    public CommandSetClean(ApplicationContext applicationContext) {
-        super(applicationContext);
+    public CommandSetClean(ApplicationContext applicationContext, String args) {
+        super(applicationContext, null);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class SessionManager {
         Assertions.assertTrue(tpmDeviceTbs.connect());
     }
 
-    public String executeScript(String script) {
+    public String executeScript(String script, String args) {
 
         int seq;
         byte[] baCmd, baResp;
@@ -43,7 +43,7 @@ public class SessionManager {
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_START)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Mono.just(new StartRequest(script)), StartRequest.class)
+                .body(Mono.just(new StartRequest(script, args)), StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)

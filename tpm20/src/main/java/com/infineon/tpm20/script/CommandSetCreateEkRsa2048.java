@@ -10,8 +10,8 @@ public class CommandSetCreateEkRsa2048 extends AbstractCommandSet {
 
     public static String name = "create-ek-rsa2048";
 
-    public CommandSetCreateEkRsa2048(ApplicationContext applicationContext) {
-        super(applicationContext);
+    public CommandSetCreateEkRsa2048(ApplicationContext applicationContext, String args) {
+        super(applicationContext, null);
     }
 
     @Override

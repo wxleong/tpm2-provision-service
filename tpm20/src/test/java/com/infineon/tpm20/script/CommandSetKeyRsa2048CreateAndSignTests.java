@@ -40,7 +40,7 @@ public class CommandSetKeyRsa2048CreateAndSignTests {
              a primitive/primitive wrapper value, or an empty collection, as appropriate
            - Mockito.spy(): all methods are original (CallRealMethod), unless specify.
          */
-        CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSignOrig = new CommandSetKeyRsa2048CreateAndSign(applicationContext);
+        CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSignOrig = new CommandSetKeyRsa2048CreateAndSign(applicationContext, null);
         CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSign = Mockito.spy(commandSetKeyRsa2048CreateAndSignOrig);
 
         /*

@@ -61,7 +61,8 @@ public class CoreService {
                 return new StartResponse("", 0, "", true, "Provisioning script not found.");
             }
 
-            AbstractCommandSet abstractCommandSet = (AbstractCommandSet) c.getConstructor(ApplicationContext.class).newInstance(applicationContext);
+            AbstractCommandSet abstractCommandSet = (AbstractCommandSet) c.getConstructor(ApplicationContext.class, String.class)
+                    .newInstance(applicationContext, startRequest.getArgs());
             runnable = new CommandSetRunnable(abstractCommandSet, constants.THREAD_POOL_TIMEOUT);
 
             if (runnable != null) {
