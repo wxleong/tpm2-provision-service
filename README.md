@@ -9,6 +9,7 @@ Provisioning server for TPM 2.0.
 - **[Project tpm20](#project-tpm20)**
 - **[Prepare Docker Image](#prepare-docker-image)**
 - **[Device Agent](#device-agent)**
+- **[Provisioning Script Examples](#provisioning-script-examples)**
 - **[References](#references)**
 - **[License](#license)**
 
@@ -97,14 +98,16 @@ $ cd ~/tpm2-provision-service/device
 $ gcc -Wall xfer.c -o xfer
 ```
 
-List supported scripts:
+# Provisioning Script Examples
+
+Getting a list of supported scripts:
 ```
 $ curl http://localhost:1014/api/v1/scripts
 ```
 
 Alternatively, develop your own script and drop it [here](tpm20/src/main/java/com/infineon/tpm20/script).
 
-## Example 1
+## Get Random
 
 A script to get random value. TPM commands and responses are exchanged between the TPM and tpm20 service, device's TSS library is not involved at this stage. Eventually, the service will obtain a random value from the TPM.
 ```
@@ -118,7 +121,7 @@ $ chmod a+x provision.sh
 $ ./provision.sh get-random
 ```
 
-## Example 2
+## Create RSA2048 Endorsement Key
 
 A script to create an RSA2048 Endorsement Key (EK) and persist it at handle `0x81010001`:
 ```
@@ -134,7 +137,7 @@ $ tpm2_nvread 0x1c00002 -o rsa_ek.crt.der
 $ openssl x509 -inform der -in rsa_ek.crt.der -text
 ```
 
-## Example 3
+## EK Based Authentication
 
 A script to perform device authentication, capable of proving a device contains an authentic TPM:
 ```
