@@ -149,8 +149,12 @@ public class CoreService {
                     if (runnable.isEndedOk()) {
                         /* update repository */
                         AbstractResult result = runnable.getResult();
-                        String json = Utility.objectToJson(result);
-                        session.setResult(json);
+                        if (result != null) {
+                            String json = Utility.objectToJson(result);
+                            session.setResult(json);
+                        } else {
+                            session.setResult("");
+                        }
                         session.setSeq(xferRequest.getSeq() + 1);
                         sessionRepoService.save(session);
 
