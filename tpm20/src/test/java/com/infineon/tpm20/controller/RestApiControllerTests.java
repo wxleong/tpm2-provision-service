@@ -1,5 +1,6 @@
 package com.infineon.tpm20.controller;
 
+import com.infineon.tpm20.Constants;
 import com.infineon.tpm20.entity.Session;
 import com.infineon.tpm20.model.v1.scripts.ScriptsResponse;
 import com.infineon.tpm20.model.v1.session.*;
@@ -38,6 +39,8 @@ public class RestApiControllerTests {
     private SessionRepoService sessionRepoService;
     @Autowired
     private ThreadService threadService;
+    @Autowired
+    private Constants constants;
 
     @Test
     void processApiV1Ping() {
@@ -59,10 +62,14 @@ public class RestApiControllerTests {
                 .expectStatus().isOk()
                 .expectBody(ScriptsResponse.class)
                 .returnResult();
-        Assertions.assertEquals(3, result.getResponseBody().getScripts().length);
-        Assertions.assertEquals(SCRIPT_GET_RANDOM, result.getResponseBody().getScripts()[0]);
-        Assertions.assertEquals(SCRIPT_EK_RSA2048_BASED_AUTHENTICATION, result.getResponseBody().getScripts()[1]);
-        Assertions.assertEquals(SCRIPT_CREATE_EK_RSA2048, result.getResponseBody().getScripts()[2]);
+
+        String scripts[] = result.getResponseBody().getScripts();
+
+        Assertions.assertEquals(constants.scripts.size(), result.getResponseBody().getScripts().length);
+
+        for (String script : scripts) {
+            Assertions.assertNotNull(constants.scripts.get(script));
+        }
     }
 
     /**
