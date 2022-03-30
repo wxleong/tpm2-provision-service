@@ -116,7 +116,7 @@ $ curl http://localhost:1014/api/v1/scripts
 
 Alternatively, develop your own script and drop it [here](tpm20/src/main/java/com/infineon/tpm20/script).
 
-
+Available scripts:
 | Script | Command | Info |
 |---|---|---|
 | `get-random` | <pre>$ ./get-random.sh</pre> or <pre>$ ./provision.sh get-random</pre> | Read random value from TPM. |
