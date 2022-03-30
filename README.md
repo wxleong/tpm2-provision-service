@@ -120,6 +120,7 @@ $ curl http://localhost:1014/api/v1/scripts
     <th>Command</th>
     <th>Info</th>
 </tr>
+<tr></tr>
 <tr>
     <td>get-random</td>
     <td><pre>$ ./get-random.sh</pre> or <pre>$ ./provision.sh get-random</pre></td>
