@@ -132,7 +132,7 @@ $ ./get-random.sh
 ```
 or
 ```
-$ ./provision.sh get-random
+$ ./provision.sh get-random "{\"bytes\":16}"
 ```
 
 </td>
