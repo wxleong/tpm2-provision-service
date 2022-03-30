@@ -114,9 +114,6 @@ Getting a list of supported scripts:
 $ curl http://localhost:1014/api/v1/scripts
 ```
 
-Alternatively, develop your own script and drop it [here](tpm20/src/main/java/com/infineon/tpm20/script).
-
-Available scripts:
 | Script | Command | Info |
 |---|---|---|
 | `get-random` | <pre>$ ./get-random.sh</pre> or <pre>$ ./provision.sh get-random</pre> | Read random value from TPM. |
@@ -124,6 +121,8 @@ Available scripts:
 | `ek-rsa2048-based-auth` | <pre>$ ./provision.sh ek-rsa2048-based-auth</pre> | perform device authentication, capable of proving a device contains an authentic TPM. |
 | `clean` | <pre>$ ./provision.sh clean</pre> | Evict persistent handles: `0x81010001`, `0x81000100`, `0x81000101` |
 | `...` | <pre>$ ./provision.sh ...</pre> | |
+
+Still can't find what you are looking for? Develop your own script and drop it [here](tpm20/src/main/java/com/infineon/tpm20/script).
 
 # References
 
