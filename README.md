@@ -157,7 +157,7 @@ $ openssl x509 -inform der -in rsa_ek.crt.der -text
 ```
 
 </td>
-<td>Create an RSA2048 Endorsement Key (EK) and persist it at handle `0x81010001`</td>
+<td>Create an RSA2048 Endorsement Key (EK) and persist it at handle 0x81010001</td>
 </tr>
 
 <tr></tr>
@@ -183,7 +183,10 @@ $ ./provision.sh clean
 ```
 
 </td>
-<td>Evict persistent handles: `0x81010001`, `0x81000100`, `0x81000101`</td>
+<td>
+Evict persistent handles: 0x81010001, 0x81000100, 0x81000101
+
+</td>
 </tr>
 
 <tr></tr>
