@@ -115,41 +115,90 @@ $ curl http://localhost:1014/api/v1/scripts
 ```
 
 <table>
+
 <tr>
-    <th>Script</th>
-    <th>Command</th>
-    <th>Info</th>
+<th>Script</th>
+<th>Command</th>
+<th>Info</th>
 </tr>
+
 <tr></tr>
 <tr>
-    <td>get-random</td>
-    <td><pre>$ ./get-random.sh</pre> or <pre>$ ./provision.sh get-random</pre></td>
-    <td>Read random value from TPM.</td>
+<td>get-random</td>
+<td>
+
+```
+$ ./get-random.sh</pre>
+```
+or
+```
+$ ./provision.sh get-random
+```
+
+</td>
+<td>Read random value from TPM.</td>
 </tr>
+
 <tr></tr>
 <tr>
-    <td>create-ek-rsa2048</td>
-    <td><pre>$ ./provision.sh create-ek-rsa2048<br>$ tpm2_readpublic -c 0x81010001</pre>You may find the associated EK certificate at:<pre>$ tpm2_nvread 0x1c00002 -o rsa_ek.crt.der<br>$ openssl x509 -inform der -in rsa_ek.crt.der -text</pre></td>
-    <td>Create an RSA2048 Endorsement Key (EK) and persist it at handle `0x81010001`</td>
+<td>create-ek-rsa2048</td>
+<td>
+
+```
+$ ./provision.sh create-ek-rsa2048
+$ tpm2_readpublic -c 0x81010001
+```
+
+You may find the associated EK certificate at:
+
+```
+$ tpm2_nvread 0x1c00002 -o rsa_ek.crt.der
+$ openssl x509 -inform der -in rsa_ek.crt.der -text
+```
+
+</td>
+<td>Create an RSA2048 Endorsement Key (EK) and persist it at handle `0x81010001`</td>
 </tr>
+
 <tr></tr>
 <tr>
-    <td>ek-rsa2048-based-auth</td>
-    <td><pre>$ ./provision.sh ek-rsa2048-based-auth</pre></td>
-    <td>Perform device authentication, capable of proving a device contains an authentic TPM.</td>
+<td>ek-rsa2048-based-auth</td>
+<td>
+
+```
+$ ./provision.sh ek-rsa2048-based-auth
+```
+
+</td>
+<td>Perform device authentication, capable of proving a device contains an authentic TPM.</td>
 </tr>
+
 <tr></tr>
 <tr>
-    <td>clean</td>
-    <td><pre>$ ./provision.sh clean</pre></td>
-    <td>Evict persistent handles: `0x81010001`, `0x81000100`, `0x81000101`</td>
+<td>clean</td>
+<td>
+
+```
+$ ./provision.sh clean
+```
+
+</td>
+<td>Evict persistent handles: `0x81010001`, `0x81000100`, `0x81000101`</td>
 </tr>
+
 <tr></tr>
 <tr>
-    <td>...</td>
-    <td><pre>$ ./provision.sh ...</pre></td>
-    <td></td>
+<td>...</td>
+<td>
+
+```
+$ ./provision.sh ...
+```
+
+</td>
+<td></td>
 </tr>
+
 </table>
 
 Still can't find what you are looking for? Develop your own script and drop it in [here](tpm20/src/main/java/com/infineon/tpm20/script).
