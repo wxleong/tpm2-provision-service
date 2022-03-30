@@ -123,7 +123,7 @@ $ curl http://localhost:1014/api/v1/scripts
 <tr></tr>
 <tr>
     <td>get-random</td>
-    <td><pre>$ ./get-random.sh</pre> or <pre>$ ./provision.sh get-random</pre></td>
+    <td><br><pre>$ ./get-random.sh</pre> or <pre>$ ./provision.sh get-random</pre></td>
     <td>Read random value from TPM.</td>
 </tr>
 <tr></tr>
