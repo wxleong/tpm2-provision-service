@@ -2,7 +2,7 @@
 
 PROVISION_SERVICE_URL="http://localhost:1014"
 SCRIPT_NAME="${1}"
-ARGS="${2}"
+ARGS=`echo "${2}" | sed "s;\";\\\\\\\\\";g"`
 
 #
 # Dependencies check
