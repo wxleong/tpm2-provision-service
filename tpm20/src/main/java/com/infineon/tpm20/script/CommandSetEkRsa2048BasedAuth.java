@@ -30,7 +30,7 @@ public class CommandSetEkRsa2048BasedAuth extends AbstractCommandSet {
     @Override
     public void run(Tpm tpm) {
         try {
-            TPM_HANDLE ekPersistentHandle = TPM_HANDLE.persistent(0x00010001); // 0x81010001
+            TPM_HANDLE ekPersistentHandle = new TPM_HANDLE(0x81010001);
             byte[] standardEKPolicy = Helpers.fromHex("837197674484b3f81a90cc8d46a5d724fd52d76e06520b64f2a1da1b331469aa");
             TPMT_PUBLIC ekPub;
 

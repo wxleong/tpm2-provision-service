@@ -17,7 +17,7 @@ public class CommandSetCreateEkRsa2048 extends AbstractCommandSet {
     @Override
     public void run(Tpm tpm) {
         try {
-            TPM_HANDLE ekPersistentHandle = TPM_HANDLE.persistent(0x00010001); // 0x81010001
+            TPM_HANDLE ekPersistentHandle = new TPM_HANDLE(0x81010001);
 
             /* clear loaded session */
 

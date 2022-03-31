@@ -30,7 +30,7 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
     @Override
     public void run(Tpm tpm) {
         try {
-            TPM_HANDLE ekPersistentHandle = TPM_HANDLE.persistent(0x00010001); // 0x81010001
+            TPM_HANDLE ekPersistentHandle = new TPM_HANDLE(0x81010001);
             byte[] standardEKPolicy = Helpers.fromHex("837197674484b3f81a90cc8d46a5d724fd52d76e06520b64f2a1da1b331469aa");
             TPMT_PUBLIC ekPub, srkPub, signPub;
 
@@ -79,7 +79,7 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
 
             /* check SRK persistent handle exist */
 
-            TPM_HANDLE srkPersistentHandle = TPM_HANDLE.persistent(0x00000100); // 0x81000100
+            TPM_HANDLE srkPersistentHandle = new TPM_HANDLE(0x81000100);
 
             rpResp = tpm._allowErrors().ReadPublic(srkPersistentHandle);
             rc = tpm._getLastResponseCode();
@@ -113,7 +113,7 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
 
             /* check signing key persistent handle exist */
 
-            TPM_HANDLE signKeyPersistentHandle = TPM_HANDLE.persistent(0x00000101); // 0x81000101
+            TPM_HANDLE signKeyPersistentHandle = new TPM_HANDLE(0x81000101);
 
             rpResp = tpm._allowErrors().ReadPublic(signKeyPersistentHandle);
             rc = tpm._getLastResponseCode();
