@@ -1,9 +1,11 @@
 package com.infineon.tpm20.script;
 
 import com.google.common.primitives.Bytes;
+import com.infineon.tpm20.model.v1.session.ArgsSigning;
 import com.infineon.tpm20.model.v1.session.ResultRsaSigning;
 import com.infineon.tpm20.service.CAService;
 import com.infineon.tpm20.util.Utility;
+import org.bouncycastle.util.encoders.Hex;
 import org.springframework.context.ApplicationContext;
 import tss.Helpers;
 import tss.Tpm;
@@ -23,17 +25,17 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
     public CAService caService;
 
     public CommandSetKeyRsa2048CreateAndSign(ApplicationContext applicationContext, String args) {
-        super(applicationContext, null);
+        super(applicationContext, Utility.JsonToObject(args, ArgsSigning.class));
         caService = getApplicationContext().getBean(CAService.class);
     }
 
     @Override
     public void run(Tpm tpm) {
         try {
+            ArgsSigning argsSigning = (ArgsSigning) getArgs();
             TPM_HANDLE ekPersistentHandle = new TPM_HANDLE(0x81010001);
             byte[] standardEKPolicy = Helpers.fromHex("837197674484b3f81a90cc8d46a5d724fd52d76e06520b64f2a1da1b331469aa");
-            TPMT_PUBLIC ekPub, srkPub, signPub;
-
+            TPMT_PUBLIC ekPub, signPub;
 
             /* clear loaded session */
 
@@ -77,13 +79,19 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
                 return;
             }
 
-            /* check SRK persistent handle exist */
+            /* check signing key persistent handle exist */
 
-            TPM_HANDLE srkPersistentHandle = new TPM_HANDLE(0x81000100);
+            TPM_HANDLE signKeyPersistentHandle;
 
-            rpResp = tpm._allowErrors().ReadPublic(srkPersistentHandle);
+            if (argsSigning == null || argsSigning.getKeyHandle() == null)
+                signKeyPersistentHandle = new TPM_HANDLE(0x81000100);
+            else
+                signKeyPersistentHandle = new TPM_HANDLE(Long.decode(argsSigning.getKeyHandle()).intValue());
+
+            rpResp = tpm._allowErrors().ReadPublic(signKeyPersistentHandle);
             rc = tpm._getLastResponseCode();
             if (rc != TPM_RC.SUCCESS) {
+
                 /* create the SRK */
 
                 TPMT_PUBLIC keyTemplate = new TPMT_PUBLIC(TPM_ALG_ID.SHA256,
@@ -91,36 +99,17 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
                                 TPMA_OBJECT.userWithAuth, TPMA_OBJECT.restricted, TPMA_OBJECT.decrypt),
                         new byte[0],
                         new TPMS_ECC_PARMS(new TPMT_SYM_DEF_OBJECT(TPM_ALG_ID.AES,  128, TPM_ALG_ID.CFB),
-                        new TPMS_NULL_ASYM_SCHEME(),
-                        TPM_ECC_CURVE.NIST_P256,
-                        new TPMS_NULL_KDF_SCHEME()),
+                                new TPMS_NULL_ASYM_SCHEME(),
+                                TPM_ECC_CURVE.NIST_P256,
+                                new TPMS_NULL_KDF_SCHEME()),
                         new TPMS_ECC_POINT());
 
                 CreatePrimaryResponse srkKey = tpm.CreatePrimary(TPM_HANDLE.from(TPM_RH.OWNER),
                         new TPMS_SENSITIVE_CREATE(), keyTemplate, new byte[0], new TPMS_PCR_SELECTION[0]);
 
-                /* persist the SRK */
-
-                tpm.EvictControl(TPM_HANDLE.from(TPM_RH.OWNER), srkKey.handle, srkPersistentHandle);
-
-                cleanSlots(tpm, TPM_HT.LOADED_SESSION);
-                cleanSlots(tpm, TPM_HT.TRANSIENT);
-
-                srkPub = srkKey.outPublic;
-            } else {
-                srkPub = rpResp.outPublic;
-            }
-
-            /* check signing key persistent handle exist */
-
-            TPM_HANDLE signKeyPersistentHandle = new TPM_HANDLE(0x81000101);
-
-            rpResp = tpm._allowErrors().ReadPublic(signKeyPersistentHandle);
-            rc = tpm._getLastResponseCode();
-            if (rc != TPM_RC.SUCCESS) {
                 /* create the signing (+decrypt) key */
 
-                TPMT_PUBLIC keyTemplate = new TPMT_PUBLIC(TPM_ALG_ID.SHA256,
+                keyTemplate = new TPMT_PUBLIC(TPM_ALG_ID.SHA256,
                         new TPMA_OBJECT(TPMA_OBJECT.fixedTPM, TPMA_OBJECT.fixedParent, TPMA_OBJECT.sensitiveDataOrigin,
                                 TPMA_OBJECT.userWithAuth, TPMA_OBJECT.decrypt, TPMA_OBJECT.sign),
                         new byte[0],
@@ -131,12 +120,12 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
 
                 TPMS_SENSITIVE_CREATE keySensitive = new TPMS_SENSITIVE_CREATE(new byte[0], new byte[0]);
 
-                CreateResponse signKey = tpm.Create(srkPersistentHandle, keySensitive, keyTemplate, new byte[0],
+                CreateResponse signKey = tpm.Create(srkKey.handle, keySensitive, keyTemplate, new byte[0],
                         new TPMS_PCR_SELECTION[0]);
 
                 /* load signing key */
 
-                TPM_HANDLE signKeyHandle = tpm.Load(srkPersistentHandle, signKey.outPrivate, signKey.outPublic);
+                TPM_HANDLE signKeyHandle = tpm.Load(srkKey.handle, signKey.outPrivate, signKey.outPublic);
 
                 /* persist the signing key */
 
