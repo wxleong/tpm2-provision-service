@@ -12,4 +12,5 @@ import lombok.Setter;
 public class ArgsSigning implements IArgs {
     private String keyHandle;
     private String data;
+    private String digest;
 }

@@ -202,14 +202,28 @@ Evict persistent handles: 0x81010001 and 0x81000100.
 
 ```
 $ ./provision.sh key-rsa2048-create-and-sign \
-  "{\"keyHandle\":\"0x81000100\"}"
+  "{ \
+    \"keyHandle\":\"0x81000100\", \
+    \"data\":\"aGVsbG8gd29ybGQ=\" \
+  }"
+```
+
+or
+
+```
+$ ./provision.sh key-rsa2048-create-and-sign \
+  "{ \
+    \"keyHandle\":\"0x81000100\", \
+    \"digest\":\"AAECAwQFBgcICQoLDA0ODwABAgMEBQYHCAkKCwwNDg8=\" \
+  }"
 ```
 
 </td>
 <td>
 <ul>
 <li>Create an RSA2048 signing key and persist it at handle 0x81000100</li>
-<li>Using RSA2048 EK to verify the authenticity of the signing key</li>
+<li>Using the RSA2048 EK to verify the authenticity of the signing key</li>
+<li>Perform RSA2048 RSASSA-PSS signing on the given data (Base64 encoded byte string) or given digest (Base64 encoded 32 bytes byte string)</li>
 </ul>
 </td>
 </tr>

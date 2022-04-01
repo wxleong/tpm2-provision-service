@@ -171,16 +171,44 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
                 return;
             }
 
-            {
-                TPM2B_PUBLIC_KEY_RSA rsaPub = (TPM2B_PUBLIC_KEY_RSA) signPub.unique;
-                byte[] baRsaPub = rsaPub.buffer;
+            /* sign the given data */
 
-                TPM2B_PUBLIC_KEY_RSA ekRsaPub = (TPM2B_PUBLIC_KEY_RSA) ekPub.unique;
-                byte[] baEkRsaPub = ekRsaPub.buffer;
+            String sigBase64 = "";
+            if (argsSigning.getData() != null) {
+                byte[] data = Utility.base64ToByteArray(argsSigning.getData());
+                if (data.length > 0) {
+                    byte[] digest = TPMT_HA.fromHashOf(TPM_ALG_ID.SHA256, data).digest;
+                    TPMU_SIGNATURE signature = tpm.Sign(signKeyPersistentHandle,
+                            digest,
+                            new TPMS_SIG_SCHEME_RSAPSS(TPM_ALG_ID.SHA256),
+                            new TPMT_TK_HASHCHECK());
 
-                setResult(new ResultRsaSigning(Utility.byteArrayToBase64(baEkRsaPub),
-                        Utility.byteArrayToBase64(baRsaPub), ""));
+                    TPMS_SIGNATURE_RSAPSS sigRsaPss = (TPMS_SIGNATURE_RSAPSS)signature;
+                    sigBase64 = Utility.byteArrayToBase64(sigRsaPss.sig);
+                }
+            } else if (argsSigning.getDigest() != null) {
+                byte[] digest = Utility.base64ToByteArray(argsSigning.getDigest());
+                if (digest.length == 32) {
+                    TPMU_SIGNATURE signature = tpm.Sign(signKeyPersistentHandle,
+                            digest,
+                            new TPMS_SIG_SCHEME_RSAPSS(TPM_ALG_ID.SHA256),
+                            new TPMT_TK_HASHCHECK());
+
+                    TPMS_SIGNATURE_RSAPSS sigRsaPss = (TPMS_SIGNATURE_RSAPSS)signature;
+                    sigBase64 = Utility.byteArrayToBase64(sigRsaPss.sig);
+                }
             }
+
+            /* set result */
+
+            TPM2B_PUBLIC_KEY_RSA rsaPub = (TPM2B_PUBLIC_KEY_RSA) signPub.unique;
+            byte[] baRsaPub = rsaPub.buffer;
+
+            TPM2B_PUBLIC_KEY_RSA ekRsaPub = (TPM2B_PUBLIC_KEY_RSA) ekPub.unique;
+            byte[] baEkRsaPub = ekRsaPub.buffer;
+
+            setResult(new ResultRsaSigning(Utility.byteArrayToBase64(baEkRsaPub),
+                    Utility.byteArrayToBase64(baRsaPub), sigBase64));
 
         } catch (Exception e) {
             //e.printStackTrace();
