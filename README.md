@@ -91,7 +91,7 @@ Launch the image:
 $ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v2.0
 ```
 
-Build device agent:
+Build the device agent:
 ```
 $ git clone https://github.com/wxleong/tpm2-provision-service ~/tpm2-provision-service
 $ cd ~/tpm2-provision-service/device
@@ -157,7 +157,9 @@ $ openssl x509 -inform der -in rsa_ek.crt.der -text
 ```
 
 </td>
-<td>Create an RSA2048 Endorsement Key (EK) and persist it at handle 0x81010001</td>
+<td>
+Create an RSA2048 Endorsement Key (EK) and persist it at handle 0x81010001
+</td>
 </tr>
 
 <tr></tr>
@@ -170,7 +172,9 @@ $ ./provision.sh ek-rsa2048-based-auth
 ```
 
 </td>
-<td>Perform device authentication, capable of proving a device contains an authentic TPM.</td>
+<td>
+Perform device authentication, capable of proving a device contains an authentic TPM.
+</td>
 </tr>
 
 <tr></tr>
@@ -185,7 +189,21 @@ $ ./provision.sh clean
 </td>
 <td>
 Evict persistent handles: 0x81010001, 0x81000100, 0x81000101
+</td>
+</tr>
 
+<tr></tr>
+<tr>
+<td>key-rsa2048-create-and-sign</td>
+<td>
+
+```
+$ ./provision.sh key-rsa2048-create-and-sign "{\"keyHandle\":\"0x81000100\"}"
+```
+
+</td>
+<td>
+Create an RSA2048 signing key and persist it at handle 0x81000100.
 </td>
 </tr>
 
