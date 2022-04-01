@@ -12,6 +12,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import tss.Tpm;
+import tss.tpm.*;
 
 import static com.infineon.tpm20.Constants.*;
 
@@ -31,31 +33,72 @@ public class CommandSetGetPubKeyTests {
     /**
      * Test the complete sequence: Start -> Xfer -> Stop
      */
-    @Disabled("Need Windows machine with TPM and administrator access (TPM2_EvictControl)")
+    //@Disabled("Need Windows machine with TPM")
     @Test
     void test1() {
         try {
             SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
+            Tpm tpm = new Tpm();
+            tpm._setDevice(sessionManager.tpmDeviceTbs);
 
             /* create RSA key */
-            String json = sessionManager.executeScript(SCRIPT_KEY_RSA2048_CREATE_AND_SIGN,
-                    Utility.objectToJson(new ArgsSigning("0x81000111","","","")));
-            ResultRsaSigning resultRsaSigning = Utility.JsonToObject(json, ResultRsaSigning.class);
-            Assertions.assertNotEquals("", resultRsaSigning.getPub());
+
+            cleanSlots(tpm, TPM_HT.LOADED_SESSION);
+            cleanSlots(tpm, TPM_HT.TRANSIENT);
+
+            TPM_HANDLE keyHandle = new TPM_HANDLE(0x81000111);
+            TPMT_PUBLIC rsaTemplate = new TPMT_PUBLIC(TPM_ALG_ID.SHA256,
+                    new TPMA_OBJECT(TPMA_OBJECT.sign, TPMA_OBJECT.sensitiveDataOrigin, TPMA_OBJECT.userWithAuth),
+                    new byte[0],
+                    new TPMS_RSA_PARMS(new TPMT_SYM_DEF_OBJECT(TPM_ALG_ID.NULL,  0, TPM_ALG_ID.NULL),
+                            new TPMS_SIG_SCHEME_RSASSA(TPM_ALG_ID.SHA256),  1024, 65537),
+                    new TPM2B_PUBLIC_KEY_RSA());
+
+            TPMS_SENSITIVE_CREATE sens = new TPMS_SENSITIVE_CREATE(new byte[0], new byte[0]);
+
+            CreatePrimaryResponse rsaPrimary = tpm.CreatePrimary(TPM_HANDLE.from(TPM_RH.OWNER), sens,
+                    rsaTemplate, new byte[0], new TPMS_PCR_SELECTION[0]);
+
+            evict(tpm, keyHandle);
+            tpm.EvictControl(TPM_HANDLE.from(TPM_RH.OWNER), rsaPrimary.handle, keyHandle);
 
             /* get pubkey */
-            json = sessionManager.executeScript(SCRIPT_GET_PUBKEY,
+            String json = sessionManager.executeScript(SCRIPT_GET_PUBKEY,
                     Utility.objectToJson(new ArgsGetPubKey("0x81000111")));
             ResultGetPubKey resultGetPubKey = Utility.JsonToObject(json, ResultGetPubKey.class);
             Assertions.assertEquals("rsa", resultGetPubKey.getAlgo());
-            Assertions.assertNotEquals("", resultGetPubKey.getPubKey());
+            TPM2B_PUBLIC_KEY_RSA rsa = (TPM2B_PUBLIC_KEY_RSA) rsaPrimary.outPublic.unique;
+            Assertions.assertEquals(Utility.byteArrayToBase64(rsa.buffer), resultGetPubKey.getPubKey());
 
             /* remove RSA key */
-            String[] handles = new String[]{"0x81000111"};
-            json = sessionManager.executeScript(SCRIPT_CLEAN,
-                    Utility.objectToJson(new ArgsClean(handles)));
-            Assertions.assertEquals("", json);
+            evict(tpm, keyHandle);
+
+            cleanSlots(tpm, TPM_HT.LOADED_SESSION);
+            cleanSlots(tpm, TPM_HT.TRANSIENT);
 
         } catch (Exception e) { Assertions.assertTrue(false); }
+    }
+
+    private void cleanSlots(Tpm tpm, TPM_HT slotType)
+    {
+        GetCapabilityResponse caps = tpm.GetCapability(TPM_CAP.HANDLES, slotType.toInt() << 24, 8);
+        TPML_HANDLE handles = (TPML_HANDLE)caps.capabilityData;
+
+        if (handles.handle.length == 0)
+            return;
+
+        for (TPM_HANDLE h : handles.handle)
+        {
+            tpm.FlushContext(h);
+        }
+    }
+
+    private void evict(Tpm tpm, TPM_HANDLE handle) {
+        ReadPublicResponse rpResp = tpm._allowErrors().ReadPublic(handle);
+        TPM_RC rc = tpm._getLastResponseCode();
+        if (rc == TPM_RC.SUCCESS) {
+            /* evict the handle */
+            tpm.EvictControl(TPM_HANDLE.from(TPM_RH.OWNER), handle, handle);
+        }
     }
 }
