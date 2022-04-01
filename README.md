@@ -183,12 +183,13 @@ Perform device authentication, capable of proving a device contains an authentic
 <td>
 
 ```
-$ ./provision.sh clean
+$ ./provision.sh clean \
+  "{\"handles\":[\"0x81010001\", \"0x81000100\"]}"
 ```
 
 </td>
 <td>
-Evict persistent handles: 0x81010001, 0x81000100, 0x81000101
+Evict persistent handles: 0x81010001 and 0x81000100.
 </td>
 </tr>
 

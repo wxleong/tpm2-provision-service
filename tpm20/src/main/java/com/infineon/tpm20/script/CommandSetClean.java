@@ -1,5 +1,8 @@
 package com.infineon.tpm20.script;
 
+import com.infineon.tpm20.model.v1.session.ArgsClean;
+import com.infineon.tpm20.model.v1.session.ArgsGetRandom;
+import com.infineon.tpm20.util.Utility;
 import org.springframework.context.ApplicationContext;
 import tss.Tpm;
 import tss.tpm.*;
@@ -9,24 +12,24 @@ public class CommandSetClean extends AbstractCommandSet {
     public static String name = "clean";
 
     public CommandSetClean(ApplicationContext applicationContext, String args) {
-        super(applicationContext, null);
+        super(applicationContext, Utility.JsonToObject(args, ArgsClean.class));
     }
 
     @Override
     public void run(Tpm tpm) {
         try {
 
+            ArgsClean argsClean = (ArgsClean) getArgs();
+
             cleanSlots(tpm, TPM_HT.LOADED_SESSION);
             cleanSlots(tpm, TPM_HT.TRANSIENT);
 
-            /* EK: 0x81010001 */
-            evict(tpm, TPM_HANDLE.persistent(0x00010001));
+            if (argsClean == null)
+                return;
 
-            /* CommandSetKeyRsa2048CreateAndSign: SRK: 0x81000100 */
-            evict(tpm, TPM_HANDLE.persistent(0x00000100));
-
-            /* CommandSetKeyRsa2048CreateAndSign: signing key: 0x81000101 */
-            evict(tpm, TPM_HANDLE.persistent(0x00000101));
+            for (String handle: argsClean.getHandles()) {
+                evict(tpm, new TPM_HANDLE(Long.decode(handle).intValue()));
+            }
 
             cleanSlots(tpm, TPM_HT.LOADED_SESSION);
             cleanSlots(tpm, TPM_HT.TRANSIENT);
