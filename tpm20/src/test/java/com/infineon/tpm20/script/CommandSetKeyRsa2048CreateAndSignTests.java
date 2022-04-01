@@ -16,6 +16,8 @@ import tss.Tpm;
 import tss.TpmDeviceTbs;
 import tss.tpm.TPMT_PUBLIC;
 
+import java.security.interfaces.RSAPublicKey;
+
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // Overlay the default application properties with properties from test
@@ -66,5 +68,11 @@ public class CommandSetKeyRsa2048CreateAndSignTests {
         ResultRsaSigning resultRsaSigning = (ResultRsaSigning) commandSetKeyRsa2048CreateAndSign.getResult();
         Assertions.assertEquals(256, Utility.base64ToByteArray(resultRsaSigning.getEkPub()).length);
         Assertions.assertEquals(256, Utility.base64ToByteArray(resultRsaSigning.getPub()).length);
+    }
+
+    @Disabled("Need Windows machine with TPM and administrator access (TPM2_ActivateCredential)")
+    @Test
+    void generateCSR() {
+
     }
 }

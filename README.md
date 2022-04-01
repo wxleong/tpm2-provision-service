@@ -301,6 +301,19 @@ $ openssl pkeyutl -verify \
 
 <tr></tr>
 <tr>
+<td>get-pubkey</td>
+<td>
+
+```
+$ ./provision.sh get-pubkey "{\"keyHandle\":\"0x81010001\"}"
+```
+
+</td>
+<td>Read public key.</td>
+</tr>
+
+<tr></tr>
+<tr>
 <td>...</td>
 <td>
 

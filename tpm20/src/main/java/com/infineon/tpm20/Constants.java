@@ -46,12 +46,14 @@ public class Constants {
     public static final String SCRIPT_EK_RSA2048_BASED_AUTHENTICATION = CommandSetEkRsa2048BasedAuth.name;
     public static final String SCRIPT_KEY_RSA2048_CREATE_AND_SIGN = CommandSetKeyRsa2048CreateAndSign.name;
     public static final String SCRIPT_CLEAN = CommandSetClean.name;
+    public static final String SCRIPT_GET_PUBKEY = CommandSetGetPubKey.name;
     public Map<String, Class<?>> scripts  = new HashMap<>() {{
         put(SCRIPT_GET_RANDOM, CommandSetGetRandom.class);
         put(SCRIPT_CREATE_EK_RSA2048, CommandSetCreateEkRsa2048.class);
         put(SCRIPT_EK_RSA2048_BASED_AUTHENTICATION, CommandSetEkRsa2048BasedAuth.class);
         put(SCRIPT_KEY_RSA2048_CREATE_AND_SIGN, CommandSetKeyRsa2048CreateAndSign.class);
         put(SCRIPT_CLEAN, CommandSetClean.class);
+        put(SCRIPT_GET_PUBKEY, CommandSetGetPubKey.class);
     }};
 
     @Value("${management.server.port}")
