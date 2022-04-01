@@ -203,6 +203,15 @@ Evict persistent handles: 0x81010001 and 0x81000100.
 ```
 $ ./provision.sh key-rsa2048-create-and-sign \
   "{ \
+    \"keyHandle\":\"0x81000100\" \
+  }"
+```
+
+or
+
+```
+$ ./provision.sh key-rsa2048-create-and-sign \
+  "{ \
     \"keyHandle\":\"0x81000100\", \
     \"data\":\"aGVsbG8gd29ybGQ=\" \
   }"
