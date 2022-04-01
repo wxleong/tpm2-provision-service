@@ -232,7 +232,8 @@ or
 
 ```
 $ echo "hello world" > message.txt
-$ DIGEST=`openssl dgst -sha256 -binary message.txt | base64`
+$ DIGEST=`openssl dgst -sha256 -binary message.txt \
+  | base64`
 $ ./provision.sh key-rsa2048-create-and-sign \
   "{ \
     \"keyHandle\":\"0x81000100\", \
@@ -252,7 +253,7 @@ $ openssl dgst -sha256 -verify public.pem \
 </td>
 <td>
 <ul>
-<li>Create an RSA2048 signing key and persist it at handle 0x81000100</li>
+<li>If the handle is not found, create an RSA2048 signing key and persist it at handle 0x81000100</li>
 <li>Using the RSA2048 EK to verify the authenticity of the signing key</li>
 <li>Perform RSA2048 (PCKS#1 v1.5) signing on the given data (Base64 encoded byte string) or given digest (Base64 encoded 32 bytes byte string)</li>
 </ul>
