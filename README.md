@@ -210,21 +210,43 @@ $ ./provision.sh key-rsa2048-create-and-sign \
 or
 
 ```
+$ echo "hello world" > message.txt
+$ MESSAGE=`base64 message.txt`
 $ ./provision.sh key-rsa2048-create-and-sign \
   "{ \
     \"keyHandle\":\"0x81000100\", \
-    \"data\":\"aGVsbG8gd29ybGQ=\" \
+    \"data\":\"${MESSAGE}\" \
   }"
+
+# verify the signature
+
+$ tpm2_readpublic -c 0x81000100 -o public.pem -f pem
+$ jq -r ".result" session-stop-resp.json \
+  | jq -r ".sig" \
+  | base64 --decode > signature
+$ openssl dgst -sha256 -verify public.pem \
+  -keyform pem -signature signature message.txt
 ```
 
 or
 
 ```
+$ echo "hello world" > message.txt
+$ DIGEST=`openssl dgst -sha256 -binary message.txt | base64`
 $ ./provision.sh key-rsa2048-create-and-sign \
   "{ \
     \"keyHandle\":\"0x81000100\", \
-    \"digest\":\"AAECAwQFBgcICQoLDA0ODwABAgMEBQYHCAkKCwwNDg8=\" \
+    \"digest\":\"${DIGEST}\" \
   }"
+
+# verify the signature
+
+$ tpm2_readpublic -c 0x81000100 -o public.pem -f pem
+$ jq -r ".result" session-stop-resp.json \
+  | jq -r ".sig" \
+  | base64 --decode > signature
+$ openssl dgst -sha256 -verify public.pem \
+  -keyform pem -signature signature message.txt
 ```
 
 </td>
@@ -232,7 +254,7 @@ $ ./provision.sh key-rsa2048-create-and-sign \
 <ul>
 <li>Create an RSA2048 signing key and persist it at handle 0x81000100</li>
 <li>Using the RSA2048 EK to verify the authenticity of the signing key</li>
-<li>Perform RSA2048 RSASSA-PSS signing on the given data (Base64 encoded byte string) or given digest (Base64 encoded 32 bytes byte string)</li>
+<li>Perform RSA2048 (PCKS#1 v1.5) signing on the given data (Base64 encoded byte string) or given digest (Base64 encoded 32 bytes byte string)</li>
 </ul>
 </td>
 </tr>

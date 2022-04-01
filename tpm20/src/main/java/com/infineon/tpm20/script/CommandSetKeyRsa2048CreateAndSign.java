@@ -180,22 +180,26 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
                     byte[] digest = TPMT_HA.fromHashOf(TPM_ALG_ID.SHA256, data).digest;
                     TPMU_SIGNATURE signature = tpm.Sign(signKeyPersistentHandle,
                             digest,
-                            new TPMS_SIG_SCHEME_RSAPSS(TPM_ALG_ID.SHA256),
+                            //new TPMS_SIG_SCHEME_RSAPSS(TPM_ALG_ID.SHA256),
+                            new TPMS_SIG_SCHEME_RSASSA(TPM_ALG_ID.SHA256),
                             new TPMT_TK_HASHCHECK());
 
-                    TPMS_SIGNATURE_RSAPSS sigRsaPss = (TPMS_SIGNATURE_RSAPSS)signature;
-                    sigBase64 = Utility.byteArrayToBase64(sigRsaPss.sig);
+                    //TPMS_SIGNATURE_RSAPSS sigRsa = (TPMS_SIGNATURE_RSAPSS)signature;
+                    TPMS_SIGNATURE_RSASSA sigRsa = (TPMS_SIGNATURE_RSASSA)signature;
+                    sigBase64 = Utility.byteArrayToBase64(sigRsa.sig);
                 }
             } else if (argsSigning.getDigest() != null) {
                 byte[] digest = Utility.base64ToByteArray(argsSigning.getDigest());
                 if (digest.length == 32) {
                     TPMU_SIGNATURE signature = tpm.Sign(signKeyPersistentHandle,
                             digest,
-                            new TPMS_SIG_SCHEME_RSAPSS(TPM_ALG_ID.SHA256),
+                            //new TPMS_SIG_SCHEME_RSAPSS(TPM_ALG_ID.SHA256),
+                            new TPMS_SIG_SCHEME_RSASSA(TPM_ALG_ID.SHA256),
                             new TPMT_TK_HASHCHECK());
 
-                    TPMS_SIGNATURE_RSAPSS sigRsaPss = (TPMS_SIGNATURE_RSAPSS)signature;
-                    sigBase64 = Utility.byteArrayToBase64(sigRsaPss.sig);
+                    //TPMS_SIGNATURE_RSAPSS sigRsa = (TPMS_SIGNATURE_RSAPSS)signature;
+                    TPMS_SIGNATURE_RSASSA sigRsa = (TPMS_SIGNATURE_RSASSA)signature;
+                    sigBase64 = Utility.byteArrayToBase64(sigRsa.sig);
                 }
             }
 
