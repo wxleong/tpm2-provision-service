@@ -185,6 +185,7 @@ Perform device authentication, capable of proving a device contains an authentic
 ```
 $ ./provision.sh clean \
   "{\"handles\":[\"0x81010001\", \"0x81000100\"]}"
+$ tpm2_getcap handles-persistent
 ```
 
 </td>
