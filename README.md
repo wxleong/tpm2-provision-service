@@ -102,6 +102,7 @@ Prepare your environment:
 ```
 $ cd ~/tpm2-provision-service/device
 $ sudo chmod a+rw /dev/tpm0
+$ tpm2_clear -T device:/dev/tpm0 -c p
 $ chmod a+x *.sh
 ```
 
