@@ -206,7 +206,10 @@ $ ./provision.sh key-rsa2048-create-and-sign \
 
 </td>
 <td>
-Create an RSA2048 signing key and persist it at handle 0x81000100.
+<ul>
+<li>Create an RSA2048 signing key and persist it at handle 0x81000100</li>
+<li>Using EK to verify the authenticity of the signing key</li>
+</ul>
 </td>
 </tr>
 
