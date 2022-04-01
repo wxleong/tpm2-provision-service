@@ -200,6 +200,8 @@ Evict persistent handles: 0x81010001 and 0x81000100.
 <td>key-rsa2048-create-and-sign</td>
 <td>
 
+Create a signing key:
+
 ```
 $ ./provision.sh key-rsa2048-create-and-sign \
   "{ \
@@ -207,7 +209,7 @@ $ ./provision.sh key-rsa2048-create-and-sign \
   }"
 ```
 
-or
+or, create and sign (PKCS#1 v1.5 padding) a message:
 
 ```
 $ echo "hello world" > message.txt
@@ -215,6 +217,7 @@ $ MESSAGE=`base64 message.txt`
 $ ./provision.sh key-rsa2048-create-and-sign \
   "{ \
     \"keyHandle\":\"0x81000100\", \
+    \"padding\":\"pkcs\", \
     \"data\":\"${MESSAGE}\" \
   }"
 
@@ -226,9 +229,13 @@ $ jq -r ".result" session-stop-resp.json \
   | base64 --decode > signature
 $ openssl dgst -sha256 -verify public.pem \
   -keyform pem -signature signature message.txt
+$ openssl pkeyutl -verify \
+  -pubin -inkey public.pem \
+  -in digest.bin -sigfile signature \
+  -pkeyopt digest:sha256
 ```
 
-or
+or, create and sign (PKCS#1 v1.5 padding) a digest:
 
 ```
 $ echo "hello world" > message.txt
@@ -237,6 +244,7 @@ $ DIGEST=`openssl dgst -sha256 -binary message.txt \
 $ ./provision.sh key-rsa2048-create-and-sign \
   "{ \
     \"keyHandle\":\"0x81000100\", \
+    \"padding\":\"pkcs\", \
     \"digest\":\"${DIGEST}\" \
   }"
 
@@ -248,6 +256,37 @@ $ jq -r ".result" session-stop-resp.json \
   | base64 --decode > signature
 $ openssl dgst -sha256 -verify public.pem \
   -keyform pem -signature signature message.txt
+$ openssl pkeyutl -verify \
+  -pubin -inkey public.pem \
+  -in digest.bin -sigfile signature \
+  -pkeyopt digest:sha256
+```
+
+or, create and sign (PKCS#1 v2.1 PSS padding) a digest:
+
+```
+$ echo "hello world" > message.txt
+$ DIGEST=`openssl dgst -sha256 -binary message.txt \
+  | base64`
+$ ./provision.sh key-rsa2048-create-and-sign \
+  "{ \
+    \"keyHandle\":\"0x81000100\", \
+    \"padding\":\"pss\", \
+    \"digest\":\"${DIGEST}\" \
+  }"
+
+# verify the signature
+
+$ tpm2_readpublic -c 0x81000100 -o public.pem -f pem
+$ jq -r ".result" session-stop-resp.json \
+  | jq -r ".sig" \
+  | base64 --decode > signature
+$ openssl pkeyutl -verify \
+  -pubin -inkey public.pem \
+  -in digest.bin -sigfile signature \
+  -pkeyopt digest:sha256 \
+  -pkeyopt rsa_padding_mode:pss \
+  -pkeyopt rsa_pss_saltlen:-1
 ```
 
 </td>
@@ -255,7 +294,7 @@ $ openssl dgst -sha256 -verify public.pem \
 <ul>
 <li>If the handle is not found, create an RSA2048 signing key and persist it at handle 0x81000100</li>
 <li>Using the RSA2048 EK to verify the authenticity of the signing key</li>
-<li>Perform RSA2048 (PCKS#1 v1.5) signing on the given data (Base64 encoded byte string) or given digest (Base64 encoded 32 bytes byte string)</li>
+<li>Perform RSA2048 (PCKS#1 v1.5 or PSS) signing on the given data (Base64 encoded byte string) or given digest (Base64 encoded 32 bytes byte string)</li>
 </ul>
 </td>
 </tr>

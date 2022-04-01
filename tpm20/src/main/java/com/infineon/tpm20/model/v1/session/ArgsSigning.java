@@ -11,6 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ArgsSigning implements IArgs {
     private String keyHandle;
+    private String padding;
     private String data;
     private String digest;
 }
