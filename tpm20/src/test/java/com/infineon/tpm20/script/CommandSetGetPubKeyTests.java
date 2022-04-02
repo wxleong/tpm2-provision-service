@@ -16,6 +16,8 @@ import tss.Tpm;
 import tss.tpm.*;
 
 import static com.infineon.tpm20.Constants.*;
+import static com.infineon.tpm20.script.TpmUtility.cleanSlots;
+import static com.infineon.tpm20.script.TpmUtility.evict;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -51,7 +53,7 @@ public class CommandSetGetPubKeyTests {
                     new TPMA_OBJECT(TPMA_OBJECT.sign, TPMA_OBJECT.sensitiveDataOrigin, TPMA_OBJECT.userWithAuth),
                     new byte[0],
                     new TPMS_RSA_PARMS(new TPMT_SYM_DEF_OBJECT(TPM_ALG_ID.NULL,  0, TPM_ALG_ID.NULL),
-                            new TPMS_SIG_SCHEME_RSASSA(TPM_ALG_ID.SHA256),  1024, 65537),
+                            new TPMS_SIG_SCHEME_RSASSA(TPM_ALG_ID.SHA256),  2048, 65537),
                     new TPM2B_PUBLIC_KEY_RSA());
 
             TPMS_SENSITIVE_CREATE sens = new TPMS_SENSITIVE_CREATE(new byte[0], new byte[0]);
@@ -77,28 +79,5 @@ public class CommandSetGetPubKeyTests {
             cleanSlots(tpm, TPM_HT.TRANSIENT);
 
         } catch (Exception e) { Assertions.assertTrue(false); }
-    }
-
-    private void cleanSlots(Tpm tpm, TPM_HT slotType)
-    {
-        GetCapabilityResponse caps = tpm.GetCapability(TPM_CAP.HANDLES, slotType.toInt() << 24, 8);
-        TPML_HANDLE handles = (TPML_HANDLE)caps.capabilityData;
-
-        if (handles.handle.length == 0)
-            return;
-
-        for (TPM_HANDLE h : handles.handle)
-        {
-            tpm.FlushContext(h);
-        }
-    }
-
-    private void evict(Tpm tpm, TPM_HANDLE handle) {
-        ReadPublicResponse rpResp = tpm._allowErrors().ReadPublic(handle);
-        TPM_RC rc = tpm._getLastResponseCode();
-        if (rc == TPM_RC.SUCCESS) {
-            /* evict the handle */
-            tpm.EvictControl(TPM_HANDLE.from(TPM_RH.OWNER), handle, handle);
-        }
     }
 }
