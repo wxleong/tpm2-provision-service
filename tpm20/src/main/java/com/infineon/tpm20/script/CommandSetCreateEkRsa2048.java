@@ -1,10 +1,13 @@
 package com.infineon.tpm20.script;
 
 import com.infineon.tpm20.model.v1.session.ResultCreateEk;
+import com.infineon.tpm20.util.TpmUtil;
 import org.springframework.context.ApplicationContext;
 import tss.Helpers;
 import tss.Tpm;
 import tss.tpm.*;
+
+import static com.infineon.tpm20.util.TpmUtil.cleanSlots;
 
 public class CommandSetCreateEkRsa2048 extends AbstractCommandSet {
 

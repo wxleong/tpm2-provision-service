@@ -1,10 +1,10 @@
 package com.infineon.tpm20.script;
 
-import com.infineon.tpm20.model.v1.session.*;
+import com.infineon.tpm20.model.v1.session.ArgsGetPubKey;
+import com.infineon.tpm20.model.v1.session.ResultGetPubKey;
 import com.infineon.tpm20.service.SessionRepoService;
 import com.infineon.tpm20.util.Utility;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,9 +15,9 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import tss.Tpm;
 import tss.tpm.*;
 
-import static com.infineon.tpm20.Constants.*;
-import static com.infineon.tpm20.script.TpmUtility.cleanSlots;
-import static com.infineon.tpm20.script.TpmUtility.evict;
+import static com.infineon.tpm20.Constants.SCRIPT_GET_PUBKEY;
+import static com.infineon.tpm20.util.TpmUtil.cleanSlots;
+import static com.infineon.tpm20.util.TpmUtil.evict;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

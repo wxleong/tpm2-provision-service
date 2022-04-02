@@ -16,6 +16,8 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
+import static com.infineon.tpm20.util.TpmUtil.cleanSlots;
+
 public class CommandSetEkRsa2048BasedAuth extends AbstractCommandSet {
 
     public static String name = "ek-rsa2048-based-auth";

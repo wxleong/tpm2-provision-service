@@ -5,7 +5,6 @@ import com.infineon.tpm20.model.v1.session.ArgsSigning;
 import com.infineon.tpm20.model.v1.session.ResultRsaSigning;
 import com.infineon.tpm20.service.CAService;
 import com.infineon.tpm20.util.Utility;
-import org.bouncycastle.util.encoders.Hex;
 import org.springframework.context.ApplicationContext;
 import tss.Helpers;
 import tss.Tpm;
@@ -17,6 +16,8 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
+
+import static com.infineon.tpm20.util.TpmUtil.cleanSlots;
 
 public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
 

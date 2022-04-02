@@ -1,10 +1,9 @@
-package com.infineon.tpm20.script;
+package com.infineon.tpm20.util;
 
-import tss.Tpm;
 import tss.tpm.*;
 
-public class TpmUtility {
-    public static void cleanSlots(Tpm tpm, TPM_HT slotType)
+public class TpmUtil {
+    public static void cleanSlots(tss.Tpm tpm, TPM_HT slotType)
     {
         GetCapabilityResponse caps = tpm.GetCapability(TPM_CAP.HANDLES, slotType.toInt() << 24, 8);
         TPML_HANDLE handles = (TPML_HANDLE)caps.capabilityData;
@@ -18,7 +17,7 @@ public class TpmUtility {
         }
     }
 
-    public static void evict(Tpm tpm, TPM_HANDLE handle) {
+    public static void evict(tss.Tpm tpm, TPM_HANDLE handle) {
         ReadPublicResponse rpResp = tpm._allowErrors().ReadPublic(handle);
         TPM_RC rc = tpm._getLastResponseCode();
         if (rc == TPM_RC.SUCCESS) {

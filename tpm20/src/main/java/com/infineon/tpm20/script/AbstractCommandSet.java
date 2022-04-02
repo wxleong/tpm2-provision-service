@@ -31,18 +31,4 @@ public abstract class AbstractCommandSet implements TpmSyncRunnable.TpmCommandSe
     public void setResult(IResult result) {
         this.result = result;
     }
-
-    public void cleanSlots(Tpm tpm, TPM_HT slotType)
-    {
-        GetCapabilityResponse caps = tpm.GetCapability(TPM_CAP.HANDLES, slotType.toInt() << 24, 8);
-        TPML_HANDLE handles = (TPML_HANDLE)caps.capabilityData;
-
-        if (handles.handle.length == 0)
-            return;
-
-        for (TPM_HANDLE h : handles.handle)
-        {
-            tpm.FlushContext(h);
-        }
-    }
 }

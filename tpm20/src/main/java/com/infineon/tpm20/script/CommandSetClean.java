@@ -7,6 +7,9 @@ import org.springframework.context.ApplicationContext;
 import tss.Tpm;
 import tss.tpm.*;
 
+import static com.infineon.tpm20.util.TpmUtil.cleanSlots;
+import static com.infineon.tpm20.util.TpmUtil.evict;
+
 public class CommandSetClean extends AbstractCommandSet {
 
     public static String name = "clean";
@@ -37,15 +40,6 @@ public class CommandSetClean extends AbstractCommandSet {
         } catch (Exception e) {
             //e.printStackTrace();
             throw e;
-        }
-    }
-
-    private void evict(Tpm tpm, TPM_HANDLE handle) {
-        ReadPublicResponse rpResp = tpm._allowErrors().ReadPublic(handle);
-        TPM_RC rc = tpm._getLastResponseCode();
-        if (rc == TPM_RC.SUCCESS) {
-            /* evict the handle */
-            tpm.EvictControl(TPM_HANDLE.from(TPM_RH.OWNER), handle, handle);
         }
     }
 }
