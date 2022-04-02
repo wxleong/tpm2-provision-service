@@ -3,7 +3,7 @@ package com.infineon.tpm20.script;
 import com.google.common.primitives.Bytes;
 import com.infineon.tpm20.model.v1.session.ResultEkBasedAuth;
 import com.infineon.tpm20.service.CAService;
-import com.infineon.tpm20.util.Utility;
+import com.infineon.tpm20.util.MiscUtil;
 import org.springframework.context.ApplicationContext;
 import tss.Helpers;
 import tss.Tpm;
@@ -120,7 +120,7 @@ public class CommandSetEkRsa2048BasedAuth extends AbstractCommandSet {
             if (Arrays.equals(challenge, recoveredChallenge)) {
                 TPM2B_PUBLIC_KEY_RSA ekRsaPub = (TPM2B_PUBLIC_KEY_RSA) ekPub.unique;
                 byte[] baEkRsaPub = ekRsaPub.buffer;
-                setResult(new ResultEkBasedAuth(true, Utility.byteArrayToBase64(baEkRsaPub)));
+                setResult(new ResultEkBasedAuth(true, MiscUtil.byteArrayToBase64(baEkRsaPub)));
             } else
                 setResult(new ResultEkBasedAuth(false, ""));
 

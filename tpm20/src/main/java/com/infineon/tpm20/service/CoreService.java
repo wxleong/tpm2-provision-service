@@ -6,7 +6,7 @@ import com.infineon.tpm20.model.v1.scripts.ScriptsResponse;
 import com.infineon.tpm20.model.v1.session.*;
 import com.infineon.tpm20.script.AbstractCommandSet;
 import com.infineon.tpm20.script.CommandSetRunnable;
-import com.infineon.tpm20.util.Utility;
+import com.infineon.tpm20.util.MiscUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -91,7 +91,7 @@ public class CoreService {
 
                 byte[] command = runnable.getCommandBuffer();
                 return new StartResponse(uuid, 0,
-                        Utility.byteArrayToBase64(command), false, "");
+                        MiscUtil.byteArrayToBase64(command), false, "");
             }
         } catch (Exception e) {
             log.error("",e);
@@ -132,12 +132,12 @@ public class CoreService {
 
                 byte[] command = runnable.getCommandBuffer();
                 return new XferResponse(uuid, session.getSeq(),
-                        Utility.byteArrayToBase64(command), false, "");
+                        MiscUtil.byteArrayToBase64(command), false, "");
             } else if (session.getSeq() + 1 == xferRequest.getSeq()) {
                 /* proceed */
 
                 String base64 = xferRequest.getResp();
-                byte[] resp = Utility.base64ToByteArray(base64);
+                byte[] resp = MiscUtil.base64ToByteArray(base64);
                 runnable.responseReady(resp);
 
                 if (!runnable.waitForCommandOrEnding(constants.TPM_COMMAND_TIMEOUT)) {
@@ -150,7 +150,7 @@ public class CoreService {
                         /* update repository */
                         IResult result = runnable.getResult();
                         if (result != null) {
-                            String json = Utility.objectToJson(result);
+                            String json = MiscUtil.objectToJson(result);
                             session.setResult(json);
                         } else {
                             session.setResult("");
@@ -171,7 +171,7 @@ public class CoreService {
 
                 byte[] command = runnable.getCommandBuffer();
                 return new XferResponse(uuid, xferRequest.getSeq() + 1,
-                        Utility.byteArrayToBase64(command), false, "");
+                        MiscUtil.byteArrayToBase64(command), false, "");
             } else {
                 /* out-of-sync */
                 return new XferResponse(uuid, session.getSeq(), "", false, "Sequence out of sync, please correct the sequence number.");

@@ -1,8 +1,7 @@
 package com.infineon.tpm20.script;
 
 import com.infineon.tpm20.model.v1.session.ArgsClean;
-import com.infineon.tpm20.model.v1.session.ArgsGetRandom;
-import com.infineon.tpm20.util.Utility;
+import com.infineon.tpm20.util.MiscUtil;
 import org.springframework.context.ApplicationContext;
 import tss.Tpm;
 import tss.tpm.*;
@@ -15,7 +14,7 @@ public class CommandSetClean extends AbstractCommandSet {
     public static String name = "clean";
 
     public CommandSetClean(ApplicationContext applicationContext, String args) {
-        super(applicationContext, Utility.JsonToObject(args, ArgsClean.class));
+        super(applicationContext, MiscUtil.JsonToObject(args, ArgsClean.class));
     }
 
     @Override

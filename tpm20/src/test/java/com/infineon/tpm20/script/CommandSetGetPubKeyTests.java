@@ -3,7 +3,7 @@ package com.infineon.tpm20.script;
 import com.infineon.tpm20.model.v1.session.ArgsGetPubKey;
 import com.infineon.tpm20.model.v1.session.ResultGetPubKey;
 import com.infineon.tpm20.service.SessionRepoService;
-import com.infineon.tpm20.util.Utility;
+import com.infineon.tpm20.util.MiscUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,11 +66,11 @@ public class CommandSetGetPubKeyTests {
 
             /* get pubkey */
             String json = sessionManager.executeScript(SCRIPT_GET_PUBKEY,
-                    Utility.objectToJson(new ArgsGetPubKey("0x81000111")));
-            ResultGetPubKey resultGetPubKey = Utility.JsonToObject(json, ResultGetPubKey.class);
+                    MiscUtil.objectToJson(new ArgsGetPubKey("0x81000111")));
+            ResultGetPubKey resultGetPubKey = MiscUtil.JsonToObject(json, ResultGetPubKey.class);
             Assertions.assertEquals("rsa", resultGetPubKey.getAlgo());
             TPM2B_PUBLIC_KEY_RSA rsa = (TPM2B_PUBLIC_KEY_RSA) rsaPrimary.outPublic.unique;
-            Assertions.assertEquals(Utility.byteArrayToBase64(rsa.buffer), resultGetPubKey.getPubKey());
+            Assertions.assertEquals(MiscUtil.byteArrayToBase64(rsa.buffer), resultGetPubKey.getPubKey());
 
             /* remove RSA key */
             evict(tpm, keyHandle);

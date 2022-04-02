@@ -4,7 +4,7 @@ import com.google.common.primitives.Bytes;
 import com.infineon.tpm20.model.v1.session.ArgsSigning;
 import com.infineon.tpm20.model.v1.session.ResultRsaSigning;
 import com.infineon.tpm20.service.CAService;
-import com.infineon.tpm20.util.Utility;
+import com.infineon.tpm20.util.MiscUtil;
 import org.springframework.context.ApplicationContext;
 import tss.Helpers;
 import tss.Tpm;
@@ -26,7 +26,7 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
     public CAService caService;
 
     public CommandSetKeyRsa2048CreateAndSign(ApplicationContext applicationContext, String args) {
-        super(applicationContext, Utility.JsonToObject(args, ArgsSigning.class));
+        super(applicationContext, MiscUtil.JsonToObject(args, ArgsSigning.class));
         caService = getApplicationContext().getBean(CAService.class);
     }
 
@@ -179,12 +179,12 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
                 byte[] digest = null;
 
                 if (argsSigning.getData() != null) {
-                    byte[] data = Utility.base64ToByteArray(argsSigning.getData());
+                    byte[] data = MiscUtil.base64ToByteArray(argsSigning.getData());
                     if (data.length > 0) {
                         digest = TPMT_HA.fromHashOf(TPM_ALG_ID.SHA256, data).digest;
                     }
                 } else if (argsSigning.getDigest() != null) {
-                    digest = Utility.base64ToByteArray(argsSigning.getDigest());
+                    digest = MiscUtil.base64ToByteArray(argsSigning.getDigest());
                     if (digest.length != 32) {
                         digest = null;
                     }
@@ -199,7 +199,7 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
                                 new TPMT_TK_HASHCHECK());
 
                         TPMS_SIGNATURE_RSAPSS sigRsa = (TPMS_SIGNATURE_RSAPSS)signature;
-                        sigBase64 = Utility.byteArrayToBase64(sigRsa.sig);
+                        sigBase64 = MiscUtil.byteArrayToBase64(sigRsa.sig);
                     } else {
                         TPMU_SIGNATURE signature = tpm.Sign(signKeyPersistentHandle,
                                 digest,
@@ -207,7 +207,7 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
                                 new TPMT_TK_HASHCHECK());
 
                         TPMS_SIGNATURE_RSASSA sigRsa = (TPMS_SIGNATURE_RSASSA) signature;
-                        sigBase64 = Utility.byteArrayToBase64(sigRsa.sig);
+                        sigBase64 = MiscUtil.byteArrayToBase64(sigRsa.sig);
                     }
                 }
             }
@@ -220,8 +220,8 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
             TPM2B_PUBLIC_KEY_RSA ekRsaPub = (TPM2B_PUBLIC_KEY_RSA) ekPub.unique;
             byte[] baEkRsaPub = ekRsaPub.buffer;
 
-            setResult(new ResultRsaSigning(Utility.byteArrayToBase64(baEkRsaPub),
-                    Utility.byteArrayToBase64(baRsaPub), sigBase64));
+            setResult(new ResultRsaSigning(MiscUtil.byteArrayToBase64(baEkRsaPub),
+                    MiscUtil.byteArrayToBase64(baRsaPub), sigBase64));
 
         } catch (Exception e) {
             //e.printStackTrace();

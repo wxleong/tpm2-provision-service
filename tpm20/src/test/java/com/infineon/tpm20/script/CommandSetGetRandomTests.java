@@ -3,7 +3,7 @@ package com.infineon.tpm20.script;
 import com.infineon.tpm20.model.v1.session.ArgsGetRandom;
 import com.infineon.tpm20.model.v1.session.ResultGetRandom;
 import com.infineon.tpm20.service.SessionRepoService;
-import com.infineon.tpm20.util.Utility;
+import com.infineon.tpm20.util.MiscUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +35,10 @@ public class CommandSetGetRandomTests {
     @Test
     void test1() {
         SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
-        String json = sessionManager.executeScript(SCRIPT_GET_RANDOM, Utility.objectToJson(new ArgsGetRandom(16)));
+        String json = sessionManager.executeScript(SCRIPT_GET_RANDOM, MiscUtil.objectToJson(new ArgsGetRandom(16)));
         try {
-            ResultGetRandom resultGetRandom = Utility.JsonToObject(json, ResultGetRandom.class);
-            byte[] random = Utility.base64ToByteArray(resultGetRandom.getRandom());
+            ResultGetRandom resultGetRandom = MiscUtil.JsonToObject(json, ResultGetRandom.class);
+            byte[] random = MiscUtil.base64ToByteArray(resultGetRandom.getRandom());
             Assertions.assertEquals(16, random.length);
         } catch (Exception e) { Assertions.assertTrue(false); }
     }

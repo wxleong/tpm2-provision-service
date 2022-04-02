@@ -7,7 +7,7 @@ import com.infineon.tpm20.model.v1.session.*;
 import com.infineon.tpm20.script.SessionManager;
 import com.infineon.tpm20.service.SessionRepoService;
 import com.infineon.tpm20.service.ThreadService;
-import com.infineon.tpm20.util.Utility;
+import com.infineon.tpm20.util.MiscUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +106,7 @@ public class RestApiControllerTests {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM,
-                                                 Utility.objectToJson(new ArgsGetRandom(8)))),
+                                                 MiscUtil.objectToJson(new ArgsGetRandom(8)))),
                                 StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
@@ -155,7 +155,7 @@ public class RestApiControllerTests {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM,
-                                Utility.objectToJson(new ArgsGetRandom(8)))),
+                                MiscUtil.objectToJson(new ArgsGetRandom(8)))),
                       StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
@@ -176,7 +176,7 @@ public class RestApiControllerTests {
         /* exchange command-response pair */
 
         /* feed the command to Windows' TPM to obtain a response */
-        baCmd = Utility.base64ToByteArray(startResponse.getResponseBody().getCmd());
+        baCmd = MiscUtil.base64ToByteArray(startResponse.getResponseBody().getCmd());
         Assertions.assertNotNull(baCmd);
         tpmDeviceTbs.dispatchCommand(baCmd);
         while(!tpmDeviceTbs.responseReady())
@@ -185,7 +185,7 @@ public class RestApiControllerTests {
         Assertions.assertNotNull(baResp);
 
         /* send the response back to server */
-        b64Resp = Utility.byteArrayToBase64(baResp);
+        b64Resp = MiscUtil.byteArrayToBase64(baResp);
         EntityExchangeResult<XferResponse> xferResponse = webClient
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_XFER)
                 .accept(MediaType.APPLICATION_JSON)
@@ -229,7 +229,7 @@ public class RestApiControllerTests {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM,
-                                Utility.objectToJson(new ArgsGetRandom(8)))),
+                                MiscUtil.objectToJson(new ArgsGetRandom(8)))),
                       StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
@@ -248,7 +248,7 @@ public class RestApiControllerTests {
         Assertions.assertEquals(sessionRepoService.count(), 1);
 
         /* feed the command to Windows' TPM to obtain a response */
-        baCmd = Utility.base64ToByteArray(startResponse.getResponseBody().getCmd());
+        baCmd = MiscUtil.base64ToByteArray(startResponse.getResponseBody().getCmd());
         Assertions.assertNotNull(baCmd);
         tpmDeviceTbs.dispatchCommand(baCmd);
         while(!tpmDeviceTbs.responseReady())
@@ -257,7 +257,7 @@ public class RestApiControllerTests {
         Assertions.assertNotNull(baResp);
 
         /* 1. send the response back to server (with invalid seq) */
-        b64Resp = Utility.byteArrayToBase64(baResp);
+        b64Resp = MiscUtil.byteArrayToBase64(baResp);
         EntityExchangeResult<XferResponse> xferResponse = webClient
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_XFER)
                 .accept(MediaType.APPLICATION_JSON)
@@ -276,7 +276,7 @@ public class RestApiControllerTests {
         Assertions.assertEquals("", xferResponse.getResponseBody().getCmd());
 
         /* 2. re-send the response back to server (with valid seq but not incremented) */
-        b64Resp = Utility.byteArrayToBase64(baResp);
+        b64Resp = MiscUtil.byteArrayToBase64(baResp);
         xferResponse = webClient
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_XFER)
                 .accept(MediaType.APPLICATION_JSON)
@@ -294,7 +294,7 @@ public class RestApiControllerTests {
         Assertions.assertEquals(savedCmd, xferResponse.getResponseBody().getCmd());
 
         /* 3. re-send the response back to server (with valid seq) */
-        b64Resp = Utility.byteArrayToBase64(baResp);
+        b64Resp = MiscUtil.byteArrayToBase64(baResp);
         xferResponse = webClient
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_XFER)
                 .accept(MediaType.APPLICATION_JSON)
@@ -334,7 +334,7 @@ public class RestApiControllerTests {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM,
-                                Utility.objectToJson(new ArgsGetRandom(8)))),
+                                MiscUtil.objectToJson(new ArgsGetRandom(8)))),
                       StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
@@ -354,7 +354,7 @@ public class RestApiControllerTests {
         /* exchange command-response pair */
 
         /* feed the command to Windows' TPM to obtain a response */
-        baCmd = Utility.base64ToByteArray(startResponse.getResponseBody().getCmd());
+        baCmd = MiscUtil.base64ToByteArray(startResponse.getResponseBody().getCmd());
         Assertions.assertNotNull(baCmd);
         tpmDeviceTbs.dispatchCommand(baCmd);
         while(!tpmDeviceTbs.responseReady())
@@ -368,7 +368,7 @@ public class RestApiControllerTests {
         random.nextBytes(baRespCorrupted);
 
         /* send the corrupted response back to server */
-        b64Resp = Utility.byteArrayToBase64(baRespCorrupted);
+        b64Resp = MiscUtil.byteArrayToBase64(baRespCorrupted);
         EntityExchangeResult<XferResponse> xferResponse = webClient
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_XFER)
                 .accept(MediaType.APPLICATION_JSON)
@@ -386,7 +386,7 @@ public class RestApiControllerTests {
         Assertions.assertEquals("", xferResponse.getResponseBody().getCmd());
 
         /* send the good response back to server */
-        b64Resp = Utility.byteArrayToBase64(baResp);
+        b64Resp = MiscUtil.byteArrayToBase64(baResp);
         xferResponse = webClient
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_XFER)
                 .accept(MediaType.APPLICATION_JSON)
@@ -415,7 +415,7 @@ public class RestApiControllerTests {
         random.nextBytes(baResp);
 
         /* send session xfer with invalid uuid */
-        String b64Resp = Utility.byteArrayToBase64(baResp);
+        String b64Resp = MiscUtil.byteArrayToBase64(baResp);
         EntityExchangeResult<XferResponse>xferResponse = webClient
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_XFER)
                 .accept(MediaType.APPLICATION_JSON)
@@ -439,10 +439,10 @@ public class RestApiControllerTests {
     @Test
     void processApiV1SessionStop1() {
         SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
-        String json = sessionManager.executeScript(SCRIPT_GET_RANDOM, Utility.objectToJson(new ArgsGetRandom(8)));
+        String json = sessionManager.executeScript(SCRIPT_GET_RANDOM, MiscUtil.objectToJson(new ArgsGetRandom(8)));
         try {
-            ResultGetRandom resultGetRandom = Utility.JsonToObject(json, ResultGetRandom.class);
-            byte[] random = Utility.base64ToByteArray(resultGetRandom.getRandom());
+            ResultGetRandom resultGetRandom = MiscUtil.JsonToObject(json, ResultGetRandom.class);
+            byte[] random = MiscUtil.base64ToByteArray(resultGetRandom.getRandom());
             Assertions.assertEquals(8, random.length);
         } catch (Exception e) { Assertions.assertTrue(false); }
 
@@ -483,7 +483,7 @@ public class RestApiControllerTests {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(new StartRequest(SCRIPT_GET_RANDOM,
-                                Utility.objectToJson(new ArgsGetRandom(8)))),
+                                MiscUtil.objectToJson(new ArgsGetRandom(8)))),
                       StartRequest.class)
                 .exchange()
                 .expectStatus().isOk()
@@ -502,7 +502,7 @@ public class RestApiControllerTests {
         Assertions.assertEquals(1, threadService.count());
 
         /* feed the command to Windows' TPM to obtain a response */
-        baCmd = Utility.base64ToByteArray(startResponse.getResponseBody().getCmd());
+        baCmd = MiscUtil.base64ToByteArray(startResponse.getResponseBody().getCmd());
         Assertions.assertNotNull(baCmd);
         tpmDeviceTbs.dispatchCommand(baCmd);
         while(!tpmDeviceTbs.responseReady())
@@ -530,7 +530,7 @@ public class RestApiControllerTests {
         Assertions.assertEquals(0, threadService.count());
 
         /* send the response back to server */
-        b64Resp = Utility.byteArrayToBase64(baResp);
+        b64Resp = MiscUtil.byteArrayToBase64(baResp);
         EntityExchangeResult<XferResponse> xferResponse = webClient
                 .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_XFER)
                 .accept(MediaType.APPLICATION_JSON)

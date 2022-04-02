@@ -2,7 +2,7 @@ package com.infineon.tpm20.script;
 
 import com.infineon.tpm20.model.v1.session.*;
 import com.infineon.tpm20.service.SessionRepoService;
-import com.infineon.tpm20.util.Utility;
+import com.infineon.tpm20.util.MiscUtil;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
@@ -56,7 +56,7 @@ public class SessionManager {
         Assertions.assertFalse(startResponse.getResponseBody().isEnded());
         uuid = startResponse.getResponseBody().getUuid();
         seq = startResponse.getResponseBody().getSeq();
-        baCmd = Utility.base64ToByteArray(startResponse.getResponseBody().getCmd());
+        baCmd = MiscUtil.base64ToByteArray(startResponse.getResponseBody().getCmd());
 
         Assertions.assertEquals(sessionRepoService.count(), 1);
 
@@ -71,7 +71,7 @@ public class SessionManager {
             Assertions.assertNotNull(baResp);
 
             /* send the response back to server */
-            b64Resp = Utility.byteArrayToBase64(baResp);
+            b64Resp = MiscUtil.byteArrayToBase64(baResp);
             EntityExchangeResult<XferResponse> xferResponse = webClient
                     .post().uri("http://localhost:" + serverPort + URL_API_V1_SESSION_XFER)
                     .accept(MediaType.APPLICATION_JSON)
@@ -91,7 +91,7 @@ public class SessionManager {
                 break;
             } else {
                 Assertions.assertTrue(xferResponse.getResponseBody().getCmd().length() > 0);
-                baCmd = Utility.base64ToByteArray(xferResponse.getResponseBody().getCmd());
+                baCmd = MiscUtil.base64ToByteArray(xferResponse.getResponseBody().getCmd());
             }
         }
 

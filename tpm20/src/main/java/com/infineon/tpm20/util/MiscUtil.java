@@ -1,11 +1,10 @@
 package com.infineon.tpm20.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Base64;
 
-public class Utility {
+public class MiscUtil {
     public static String byteArrayToBase64(byte[] ba) {
         return Base64.getEncoder().encodeToString(ba);
     }

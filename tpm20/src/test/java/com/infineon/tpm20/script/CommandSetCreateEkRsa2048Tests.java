@@ -2,7 +2,7 @@ package com.infineon.tpm20.script;
 
 import com.infineon.tpm20.model.v1.session.ResultCreateEk;
 import com.infineon.tpm20.service.SessionRepoService;
-import com.infineon.tpm20.util.Utility;
+import com.infineon.tpm20.util.MiscUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ public class CommandSetCreateEkRsa2048Tests {
         SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
         String json = sessionManager.executeScript(SCRIPT_CREATE_EK_RSA2048, null);
         try {
-            ResultCreateEk resultCreateEk = Utility.JsonToObject(json, ResultCreateEk.class);
+            ResultCreateEk resultCreateEk = MiscUtil.JsonToObject(json, ResultCreateEk.class);
             Assertions.assertEquals("0x81010001", resultCreateEk.getHandle());
         } catch (Exception e) { Assertions.assertTrue(false); }
     }

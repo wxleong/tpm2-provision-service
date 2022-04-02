@@ -1,27 +1,19 @@
 package com.infineon.tpm20.script;
 
-import com.infineon.tpm20.model.v1.session.ResultCreateEk;
 import com.infineon.tpm20.model.v1.session.ResultEkBasedAuth;
-import com.infineon.tpm20.service.SessionRepoService;
-import com.infineon.tpm20.util.Utility;
-import com.netflix.discovery.converters.Auto;
+import com.infineon.tpm20.util.MiscUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import tss.Tpm;
 import tss.TpmDeviceTbs;
 import tss.tpm.TPMT_PUBLIC;
-
-import static com.infineon.tpm20.Constants.SCRIPT_CREATE_EK_RSA2048;
-import static com.infineon.tpm20.Constants.SCRIPT_EK_RSA2048_BASED_AUTHENTICATION;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -72,6 +64,6 @@ public class CommandSetEkRsa2048BasedAuthTests {
         /* verify the execution is successful */
         ResultEkBasedAuth resultEkBasedAuth = (ResultEkBasedAuth) commandSetEkRsa2048BasedAuth.getResult();
         Assertions.assertTrue(resultEkBasedAuth.getPassed());
-        Assertions.assertEquals(256, Utility.base64ToByteArray(resultEkBasedAuth.getEkPub()).length);
+        Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultEkBasedAuth.getEkPub()).length);
     }
 }
