@@ -332,7 +332,7 @@ $ ./provision.sh create-csr-sha256-rsa2048 \
 ```
 
 </td>
-<td>Create a CSR (Certificate Signing Request) with signature algorithm: RSA2048 with SHA256 and PKCS#1 v1.5 padding. </td>
+<td>Create a CSR (Certificate Signing Request) with signature algorithm: SHA256 + RSA2048 + PKCS#1 v1.5 padding. </td>
 </tr>
 
 <tr></tr>
