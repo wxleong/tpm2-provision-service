@@ -332,6 +332,14 @@ $ ./provision.sh create-csr-sha256-rsa2048 \
   "{ \
     \"keyHandle\":\"0x81000100\" \
   }"
+
+# verify the CSR
+
+$ tpm2_readpublic -c 0x81000100 -o public.pem -f pem
+$ jq -r ".result" session-stop-resp.json \
+  | jq -r ".csr" \
+  | base64 --decode > csr.der
+$ openssl req -in csr.der -inform der -text -noout -verify
 ```
 
 </td>
