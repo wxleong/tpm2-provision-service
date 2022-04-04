@@ -28,7 +28,7 @@ Provisioning server for TPM 2.0.
 # Project tpm20
 
 - You may modify the project [tpm20](tpm20) using any Java IDE that supports Maven project (e.g., IntelliJ)
-- The project test suite can only run on Windows machine with built-in TPM 2.0. Some tests require administrator right to access TPM admin commands.
+- The test suite only works on Windows machine with built-in TPM 2.0. Some tests will require administrator right to access TPM admin commands.
 
 # Prepare Docker Image
 
