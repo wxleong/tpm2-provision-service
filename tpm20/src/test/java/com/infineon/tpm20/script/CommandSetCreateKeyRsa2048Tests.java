@@ -23,7 +23,7 @@ import tss.tpm.TPMT_PUBLIC;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // Overlay the default application properties with properties from test
 @ActiveProfiles("test")
-public class CommandSetKeyRsa2048CreateTests {
+public class CommandSetCreateKeyRsa2048Tests {
 
     @Autowired
     private ApplicationContext applicationContext;
