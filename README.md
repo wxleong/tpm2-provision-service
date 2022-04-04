@@ -322,12 +322,14 @@ $ ./provision.sh get-pubkey "{\"keyHandle\":\"0x81010001\"}"
 
 ```
 # create signing key
+
 $ ./provision.sh create-key-rsa2048-and-sign \
   "{ \
     \"keyHandle\":\"0x81000100\" \
   }"
 
 # create CSR
+
 $ ./provision.sh create-csr-sha256-rsa2048 \
   "{ \
     \"keyHandle\":\"0x81000100\" \
