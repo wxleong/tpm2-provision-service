@@ -229,6 +229,7 @@ $ jq -r ".result" session-stop-resp.json \
   | base64 --decode > signature
 $ openssl dgst -sha256 -verify public.pem \
   -keyform pem -signature signature message.txt
+$ openssl dgst -sha256 -binary message.txt > digest.bin
 $ openssl pkeyutl -verify \
   -pubin -inkey public.pem \
   -in digest.bin -sigfile signature \
@@ -256,6 +257,7 @@ $ jq -r ".result" session-stop-resp.json \
   | base64 --decode > signature
 $ openssl dgst -sha256 -verify public.pem \
   -keyform pem -signature signature message.txt
+$ openssl dgst -sha256 -binary message.txt > digest.bin
 $ openssl pkeyutl -verify \
   -pubin -inkey public.pem \
   -in digest.bin -sigfile signature \
@@ -281,6 +283,7 @@ $ tpm2_readpublic -c 0x81000100 -o public.pem -f pem
 $ jq -r ".result" session-stop-resp.json \
   | jq -r ".sig" \
   | base64 --decode > signature
+$ openssl dgst -sha256 -binary message.txt > digest.bin
 $ openssl pkeyutl -verify \
   -pubin -inkey public.pem \
   -in digest.bin -sigfile signature \
