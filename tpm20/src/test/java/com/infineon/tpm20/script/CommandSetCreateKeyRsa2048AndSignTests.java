@@ -53,7 +53,7 @@ import static com.infineon.tpm20.util.TpmUtil.evict;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 // Overlay the default application properties with properties from test
 @ActiveProfiles("test")
-public class CommandSetKeyRsa2048CreateAndSignTests {
+public class CommandSetCreateKeyRsa2048AndSignTests {
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -82,15 +82,15 @@ public class CommandSetKeyRsa2048CreateAndSignTests {
              a primitive/primitive wrapper value, or an empty collection, as appropriate
            - Mockito.spy(): all methods are original (CallRealMethod), unless specify.
          */
-        CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSignOrig = new CommandSetKeyRsa2048CreateAndSign(applicationContext,
+        CommandSetCreateKeyRsa2048AndSign commandSetCreateKeyRsa2048AndSignOrig = new CommandSetCreateKeyRsa2048AndSign(applicationContext,
                 MiscUtil.objectToJson(new ArgsCreateKeyRsa2048AndSign(keyHandle, "pkcs", MiscUtil.byteArrayToBase64(data), "")));
-        CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSign = Mockito.spy(commandSetKeyRsa2048CreateAndSignOrig);
+        CommandSetCreateKeyRsa2048AndSign commandSetCreateKeyRsa2048AndSign = Mockito.spy(commandSetCreateKeyRsa2048AndSignOrig);
 
         /*
            avoid verifying platform EK certificate
            mock the EK certificate verification method to "doNothing"
          */
-        Assertions.assertDoesNotThrow(() -> Mockito.doNothing().when(commandSetKeyRsa2048CreateAndSign).readAndVerifyEkCert(Mockito.any(), Mockito.any()));
+        Assertions.assertDoesNotThrow(() -> Mockito.doNothing().when(commandSetCreateKeyRsa2048AndSign).readAndVerifyEkCert(Mockito.any(), Mockito.any()));
 
         /* initialize platform TPM */
         TpmDeviceTbs tpmDeviceTbs = new TpmDeviceTbs();
@@ -99,14 +99,14 @@ public class CommandSetKeyRsa2048CreateAndSignTests {
         tpm._setDevice(tpmDeviceTbs);
 
         /* execute the script */
-        commandSetKeyRsa2048CreateAndSign.run(tpm);
+        commandSetCreateKeyRsa2048AndSign.run(tpm);
 
         /* verify mocked method is called only once */
-        Assertions.assertDoesNotThrow(() -> Mockito.verify(commandSetKeyRsa2048CreateAndSign, Mockito.times(1))
+        Assertions.assertDoesNotThrow(() -> Mockito.verify(commandSetCreateKeyRsa2048AndSign, Mockito.times(1))
                 .readAndVerifyEkCert(Mockito.any(Tpm.class), Mockito.any(TPMT_PUBLIC.class)));
 
         /* verify the execution is successful */
-        ResultCreateKeyRsa2048AndSign resultCreateKeyRsa2048AndSign = (ResultCreateKeyRsa2048AndSign) commandSetKeyRsa2048CreateAndSign.getResult();
+        ResultCreateKeyRsa2048AndSign resultCreateKeyRsa2048AndSign = (ResultCreateKeyRsa2048AndSign) commandSetCreateKeyRsa2048AndSign.getResult();
         byte[] pub = MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getPub());
         byte[] sig = MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getSig());
 
@@ -197,24 +197,24 @@ public class CommandSetKeyRsa2048CreateAndSignTests {
            mock the EK certificate verification method to "doNothing" in script CommandSetKeyRsa2048CreateAndSign
          */
 
-        CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSignOrig = new CommandSetKeyRsa2048CreateAndSign(applicationContext,
+        CommandSetCreateKeyRsa2048AndSign commandSetCreateKeyRsa2048AndSignOrig = new CommandSetCreateKeyRsa2048AndSign(applicationContext,
                 MiscUtil.objectToJson(new ArgsCreateKeyRsa2048AndSign("0x81000111", "pkcs", MiscUtil.byteArrayToBase64(content),"")));
-        CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSign = Mockito.spy(commandSetKeyRsa2048CreateAndSignOrig);
+        CommandSetCreateKeyRsa2048AndSign commandSetCreateKeyRsa2048AndSign = Mockito.spy(commandSetCreateKeyRsa2048AndSignOrig);
 
-        Assertions.assertDoesNotThrow(() -> Mockito.doNothing().when(commandSetKeyRsa2048CreateAndSign).readAndVerifyEkCert(Mockito.any(), Mockito.any()));
+        Assertions.assertDoesNotThrow(() -> Mockito.doNothing().when(commandSetCreateKeyRsa2048AndSign).readAndVerifyEkCert(Mockito.any(), Mockito.any()));
 
         /* execute the script */
 
-        commandSetKeyRsa2048CreateAndSign.run(tpm);
+        commandSetCreateKeyRsa2048AndSign.run(tpm);
 
         /* verify mocked method is called only once */
 
-        Assertions.assertDoesNotThrow(() -> Mockito.verify(commandSetKeyRsa2048CreateAndSign, Mockito.times(1))
+        Assertions.assertDoesNotThrow(() -> Mockito.verify(commandSetCreateKeyRsa2048AndSign, Mockito.times(1))
                 .readAndVerifyEkCert(Mockito.any(Tpm.class), Mockito.any(TPMT_PUBLIC.class)));
 
         /* verify the execution is successful */
 
-        ResultCreateKeyRsa2048AndSign resultCreateKeyRsa2048AndSign = (ResultCreateKeyRsa2048AndSign) commandSetKeyRsa2048CreateAndSign.getResult();
+        ResultCreateKeyRsa2048AndSign resultCreateKeyRsa2048AndSign = (ResultCreateKeyRsa2048AndSign) commandSetCreateKeyRsa2048AndSign.getResult();
         Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getEkPub()).length);
         Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getPub()).length);
         Assertions.assertNotEquals("", resultCreateKeyRsa2048AndSign.getSig());

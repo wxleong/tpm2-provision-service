@@ -19,13 +19,13 @@ import java.util.Arrays;
 
 import static com.infineon.tpm20.util.TpmUtil.cleanSlots;
 
-public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
+public class CommandSetCreateKeyRsa2048AndSign extends AbstractCommandSet {
 
-    public static String name = "key-rsa2048-create-and-sign";
+    public static String name = "create-key-rsa2048-and-sign";
 
     public CAService caService;
 
-    public CommandSetKeyRsa2048CreateAndSign(ApplicationContext applicationContext, String args) {
+    public CommandSetCreateKeyRsa2048AndSign(ApplicationContext applicationContext, String args) {
         super(applicationContext, MiscUtil.JsonToObject(args, ArgsCreateKeyRsa2048AndSign.class));
         caService = getApplicationContext().getBean(CAService.class);
     }
