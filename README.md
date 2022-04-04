@@ -28,7 +28,7 @@ Provisioning server for TPM 2.0.
 # Project tpm20
 
 - You may modify the project [tpm20](tpm20) using any Java IDE that supports Maven project (e.g., IntelliJ)
-- The project test suite can only run on Windows machine with built-in TPM 2.0
+- The project test suite can only run on Windows machine with built-in TPM 2.0. Some tests require administrator right to access TPM admin commands.
 
 # Prepare Docker Image
 
@@ -82,13 +82,13 @@ $ sudo make install
 
 Download tpm20 docker image:
 ```
-$ docker pull --platform linux/arm/v7 ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v3.0
+$ docker pull --platform linux/arm/v7 ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v4.0
 $ docker images
 ```
 
 Launch the image:
 ```
-$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v3.0
+$ docker run -d -p 1014:1014 -p 1015:1015 --rm -it ghcr.io/wxleong/tpm2-provision-service/tpm20:develop-genesis-v4.0
 ```
 
 Build the device agent:
@@ -310,6 +310,29 @@ $ ./provision.sh get-pubkey "{\"keyHandle\":\"0x81010001\"}"
 
 </td>
 <td>Read public key.</td>
+</tr>
+
+<tr></tr>
+<tr>
+<td>create-csr-sha256-rsa2048</td>
+<td>
+
+```
+# create signing key
+$ ./provision.sh create-key-rsa2048-and-sign \
+  "{ \
+    \"keyHandle\":\"0x81000100\" \
+  }"
+
+# create CSR
+$ ./provision.sh create-csr-sha256-rsa2048 \
+  "{ \
+    \"keyHandle\":\"0x81000100\" \
+  }"
+```
+
+</td>
+<td>Create a CSR (Certificate Signing Request) with signature algorithm: RSA2048 with SHA256 and PKCS#1 v1.5 padding. </td>
 </tr>
 
 <tr></tr>

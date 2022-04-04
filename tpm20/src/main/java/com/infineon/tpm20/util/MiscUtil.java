@@ -43,4 +43,8 @@ public class MiscUtil {
     public static String toHexString(int i) {
         return "0x" + Integer.toHexString(i).toUpperCase();
     }
+
+    public static int hexStringToInt(String hexStr) {
+        return Long.decode(hexStr).intValue();
+    }
 }

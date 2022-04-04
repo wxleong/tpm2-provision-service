@@ -48,6 +48,7 @@ public class Constants {
     public static final String SCRIPT_CREATE_KEY_RSA2048 = CommandSetCreateKeyRsa2048.name;
     public static final String SCRIPT_CLEAN = CommandSetClean.name;
     public static final String SCRIPT_GET_PUBKEY = CommandSetGetPubKey.name;
+    public static final String SCRIPT_CREATE_CSR_SHA256RSA2048 = CommandSetCreateCsrSha256Rsa2048.name;
     public Map<String, Class<?>> scripts  = new HashMap<>() {{
         put(SCRIPT_GET_RANDOM, CommandSetGetRandom.class);
         put(SCRIPT_CREATE_EK_RSA2048, CommandSetCreateEkRsa2048.class);
@@ -56,6 +57,7 @@ public class Constants {
         put(SCRIPT_CREATE_KEY_RSA2048, CommandSetCreateKeyRsa2048.class);
         put(SCRIPT_CLEAN, CommandSetClean.class);
         put(SCRIPT_GET_PUBKEY, CommandSetGetPubKey.class);
+        put(SCRIPT_CREATE_CSR_SHA256RSA2048, CommandSetCreateCsrSha256Rsa2048.class);
     }};
 
     @Value("${management.server.port}")

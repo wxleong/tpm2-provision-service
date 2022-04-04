@@ -31,8 +31,16 @@ public class CommandSetCleanTests {
     //@Disabled("Need Windows machine with TPM")
     @Test
     void test1() {
-        SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
-        String json = sessionManager.executeScript(SCRIPT_CLEAN, null);
-        Assertions.assertEquals("", json);
+        TpmTools tpmTools = new TpmTools();
+
+        try {
+            SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
+            String json = sessionManager.executeScript(SCRIPT_CLEAN, null);
+            Assertions.assertEquals("", json);
+        } catch (Exception e) {
+            Assertions.assertTrue(false);
+        } finally {
+            tpmTools.clean();
+        }
     }
 }

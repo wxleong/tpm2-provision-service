@@ -4,7 +4,6 @@ import com.infineon.tpm20.model.v1.session.ResultCreateEk;
 import com.infineon.tpm20.service.SessionRepoService;
 import com.infineon.tpm20.util.MiscUtil;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,14 +30,20 @@ public class CommandSetCreateEkRsa2048Tests {
     /**
      * Test the complete sequence: Start -> Xfer -> Stop
      */
-    @Disabled("Need Windows machine with TPM and administrator access (TPM2_EvictControl)")
+    //@Disabled("Need Windows machine with TPM and administrator access (TPM2_EvictControl)")
     @Test
     void test1() {
-        SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
-        String json = sessionManager.executeScript(SCRIPT_CREATE_EK_RSA2048, null);
+        TpmTools tpmTools = new TpmTools();
+
         try {
+            SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
+            String json = sessionManager.executeScript(SCRIPT_CREATE_EK_RSA2048, null);
             ResultCreateEk resultCreateEk = MiscUtil.JsonToObject(json, ResultCreateEk.class);
             Assertions.assertEquals("0x81010001", resultCreateEk.getHandle());
-        } catch (Exception e) { Assertions.assertTrue(false); }
+        } catch (Exception e) {
+            Assertions.assertTrue(false);
+        } finally {
+            tpmTools.clean();
+        }
     }
 }

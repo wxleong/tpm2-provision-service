@@ -34,12 +34,18 @@ public class CommandSetGetRandomTests {
     //@Disabled("Need Windows machine with TPM")
     @Test
     void test1() {
-        SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
-        String json = sessionManager.executeScript(SCRIPT_GET_RANDOM, MiscUtil.objectToJson(new ArgsGetRandom(16)));
+        TpmTools tpmTools = new TpmTools();
+
         try {
+            SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
+            String json = sessionManager.executeScript(SCRIPT_GET_RANDOM, MiscUtil.objectToJson(new ArgsGetRandom(16)));
             ResultGetRandom resultGetRandom = MiscUtil.JsonToObject(json, ResultGetRandom.class);
             byte[] random = MiscUtil.base64ToByteArray(resultGetRandom.getRandom());
             Assertions.assertEquals(16, random.length);
-        } catch (Exception e) { Assertions.assertTrue(false); }
+        } catch (Exception e) {
+            Assertions.assertTrue(false);
+        } finally {
+            tpmTools.clean();
+        }
     }
 }

@@ -16,8 +16,6 @@ import tss.Tpm;
 import tss.tpm.*;
 
 import static com.infineon.tpm20.Constants.SCRIPT_GET_PUBKEY;
-import static com.infineon.tpm20.util.TpmUtil.cleanSlots;
-import static com.infineon.tpm20.util.TpmUtil.evict;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -38,17 +36,15 @@ public class CommandSetGetPubKeyTests {
     //@Disabled("Need Windows machine with TPM")
     @Test
     void test1() {
+        TpmTools tpmTools = new TpmTools();
+        Tpm tpm = tpmTools.tpm;
+        TPM_HANDLE keyHandle = new TPM_HANDLE(0x81000111);
+
         try {
-            SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
-            Tpm tpm = new Tpm();
-            tpm._setDevice(sessionManager.tpmDeviceTbs);
+            tpmTools.clean();
 
             /* create RSA key */
 
-            cleanSlots(tpm, TPM_HT.LOADED_SESSION);
-            cleanSlots(tpm, TPM_HT.TRANSIENT);
-
-            TPM_HANDLE keyHandle = new TPM_HANDLE(0x81000111);
             TPMT_PUBLIC rsaTemplate = new TPMT_PUBLIC(TPM_ALG_ID.SHA256,
                     new TPMA_OBJECT(TPMA_OBJECT.sign, TPMA_OBJECT.sensitiveDataOrigin, TPMA_OBJECT.userWithAuth),
                     new byte[0],
@@ -61,23 +57,22 @@ public class CommandSetGetPubKeyTests {
             CreatePrimaryResponse rsaPrimary = tpm.CreatePrimary(TPM_HANDLE.from(TPM_RH.OWNER), sens,
                     rsaTemplate, new byte[0], new TPMS_PCR_SELECTION[0]);
 
-            evict(tpm, keyHandle);
+            tpmTools.evict(keyHandle);
             tpm.EvictControl(TPM_HANDLE.from(TPM_RH.OWNER), rsaPrimary.handle, keyHandle);
 
             /* get pubkey */
+            SessionManager sessionManager = new SessionManager(webClient, serverPort, sessionRepoService);
             String json = sessionManager.executeScript(SCRIPT_GET_PUBKEY,
                     MiscUtil.objectToJson(new ArgsGetPubKey("0x81000111")));
             ResultGetPubKey resultGetPubKey = MiscUtil.JsonToObject(json, ResultGetPubKey.class);
             Assertions.assertEquals("rsa", resultGetPubKey.getAlgo());
             TPM2B_PUBLIC_KEY_RSA rsa = (TPM2B_PUBLIC_KEY_RSA) rsaPrimary.outPublic.unique;
             Assertions.assertEquals(MiscUtil.byteArrayToBase64(rsa.buffer), resultGetPubKey.getPubKey());
-
-            /* remove RSA key */
-            evict(tpm, keyHandle);
-
-            cleanSlots(tpm, TPM_HT.LOADED_SESSION);
-            cleanSlots(tpm, TPM_HT.TRANSIENT);
-
-        } catch (Exception e) { Assertions.assertTrue(false); }
+        } catch (Exception e) {
+            Assertions.assertTrue(false);
+        } finally {
+            tpmTools.evict(keyHandle);
+            tpmTools.clean();
+        }
     }
 }
