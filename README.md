@@ -332,7 +332,8 @@ $ ./provision.sh create-key-rsa2048-and-sign \
 
 $ ./provision.sh create-csr-sha256-rsa2048 \
   "{ \
-    \"keyHandle\":\"0x81000100\" \
+    \"keyHandle\":\"0x81000100\", \
+    \"subject\":\"CN=Common Name, O=Infineon, C=SG\" \
   }"
 
 # verify the CSR

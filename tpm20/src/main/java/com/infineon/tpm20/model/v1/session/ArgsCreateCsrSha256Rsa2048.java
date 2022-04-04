@@ -11,4 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ArgsCreateCsrSha256Rsa2048 implements IArgs {
     private String keyHandle;
+    private String subject;
 }

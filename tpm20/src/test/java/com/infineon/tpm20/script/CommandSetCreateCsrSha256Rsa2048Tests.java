@@ -69,7 +69,8 @@ public class CommandSetCreateCsrSha256Rsa2048Tests {
 
             /* "spy" on script CommandSetCreateCsrSha256Rsa2048.class */
             CommandSetCreateCsrSha256Rsa2048 commandSetCreateCsrSha256Rsa2048Orig = new CommandSetCreateCsrSha256Rsa2048(applicationContext,
-                    MiscUtil.objectToJson(new ArgsCreateCsrSha256Rsa2048(MiscUtil.toHexString(keyHandle.handle))));
+                    MiscUtil.objectToJson(new ArgsCreateCsrSha256Rsa2048(MiscUtil.toHexString(keyHandle.handle),
+                            "CN=TPM, O=TPM, OU=TPM, C=SG, L=Singapore")));
             CommandSetCreateCsrSha256Rsa2048 commandSetCreateCsrSha256Rsa2048 = Mockito.spy(commandSetCreateCsrSha256Rsa2048Orig);
 
             /*

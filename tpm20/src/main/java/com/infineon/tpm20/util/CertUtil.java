@@ -15,7 +15,7 @@ import java.security.spec.RSAPublicKeySpec;
 
 public class CertUtil {
 
-    public static byte[] genCsrContent(byte[] pubKey, byte[] sig) {
+    public static byte[] genCsrContent(byte[] pubKey, byte[] sig, String subject) {
         PublicKey publicKey = null;
         try {
             publicKey = KeyFactory.getInstance("RSA")
@@ -25,7 +25,7 @@ public class CertUtil {
 
             CsrContentSigner contentSigner = new CsrContentSigner();
 
-            X500Principal x500Principal = new X500Principal("CN=TPM, O=TPM, OU=TPM, C=SG, L=Singapore");
+            X500Principal x500Principal = new X500Principal(subject);
             PKCS10CertificationRequestBuilder p10Builder =
                     new JcaPKCS10CertificationRequestBuilder(x500Principal, publicKey);
 

@@ -134,7 +134,8 @@ public class CommandSetCreateCsrSha256Rsa2048 extends AbstractCommandSet {
             /* get the CSR content for signing */
 
             TPM2B_PUBLIC_KEY_RSA rsaPub = (TPM2B_PUBLIC_KEY_RSA) signPub.unique;
-            byte[] content = CertUtil.genCsrContent(rsaPub.buffer, null);
+            byte[] content = CertUtil.genCsrContent(rsaPub.buffer, null,
+                    argsCreateKeyRsa2048AndSign.getSubject());
             byte[] digest = TPMT_HA.fromHashOf(TPM_ALG_ID.SHA256, content).digest;
 
             /* sign CSR content */
@@ -148,7 +149,8 @@ public class CommandSetCreateCsrSha256Rsa2048 extends AbstractCommandSet {
 
             /* build the CSR */
 
-            byte[] csr = CertUtil.genCsrContent(rsaPub.buffer, rsaSig.sig);
+            byte[] csr = CertUtil.genCsrContent(rsaPub.buffer, rsaSig.sig,
+                    argsCreateKeyRsa2048AndSign.getSubject());
             if (csr == null)
                 setResult(new ResultCreateCsrSha256Rsa2048(""));
 
