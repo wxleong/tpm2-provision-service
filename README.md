@@ -108,7 +108,7 @@ $ chmod a+x *.sh
 
 # Provisioning Script Examples
 
-TPM commands and responses are exchanged between the TPM and tpm20 service, TSS library is not needed on the device.
+TPM commands and responses are exchanged between the TPM and tpm20 service (utilizing the TSS Java library from [[8]](#8)); therefore, TSS library is not needed on the device.
 
 Getting a list of supported scripts:
 ```
@@ -374,6 +374,7 @@ Still can't find what you are looking for? Develop your own script and drop it i
 <a id="5">[5] https://www.infineon.com/cms/en/product/evaluation-boards/iridium9670-tpm2.0-linux/</a> <br>
 <a id="6">[6] https://downloads.raspberrypi.org/raspios_armhf/images/raspios_armhf-2021-11-08/2021-10-30-raspios-bullseye-armhf.zip</a> <br>
 <a id="7">[7] https://github.com/AdoptOpenJDK/openjdk-docker/issues/469</a> <br>
+<a id="8">[8] https://github.com/microsoft/TSS.MSR/tree/master/TSS.Java/</a> <br>
 
 # License
 
