@@ -203,7 +203,7 @@ Evict persistent handles: 0x81010001 and 0x81000100.
 Create a signing key:
 
 ```
-$ ./provision.sh key-rsa2048-create-and-sign \
+$ ./provision.sh create-key-rsa2048-and-sign \
   "{ \
     \"keyHandle\":\"0x81000100\" \
   }"
@@ -214,7 +214,7 @@ or, create and sign (PKCS#1 v1.5 padding) a message:
 ```
 $ echo "hello world" > message.txt
 $ MESSAGE=`base64 message.txt`
-$ ./provision.sh key-rsa2048-create-and-sign \
+$ ./provision.sh create-key-rsa2048-and-sign \
   "{ \
     \"keyHandle\":\"0x81000100\", \
     \"padding\":\"pkcs\", \
@@ -241,7 +241,7 @@ or, create and sign (PKCS#1 v1.5 padding) a digest:
 $ echo "hello world" > message.txt
 $ DIGEST=`openssl dgst -sha256 -binary message.txt \
   | base64`
-$ ./provision.sh key-rsa2048-create-and-sign \
+$ ./provision.sh create-key-rsa2048-and-sign \
   "{ \
     \"keyHandle\":\"0x81000100\", \
     \"padding\":\"pkcs\", \
@@ -268,7 +268,7 @@ or, create and sign (PKCS#1 v2.1 PSS padding) a digest:
 $ echo "hello world" > message.txt
 $ DIGEST=`openssl dgst -sha256 -binary message.txt \
   | base64`
-$ ./provision.sh key-rsa2048-create-and-sign \
+$ ./provision.sh create-key-rsa2048-and-sign \
   "{ \
     \"keyHandle\":\"0x81000100\", \
     \"padding\":\"pss\", \
