@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResultRsaSigning implements IResult {
+public class ResultCreateKeyRsa2048AndSign implements IResult {
     private String ekPub;
     private String pub;
+    private String keyHandle;
     private String sig;
 }

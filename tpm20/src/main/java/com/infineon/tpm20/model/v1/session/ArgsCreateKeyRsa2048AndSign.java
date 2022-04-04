@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArgsSigning implements IArgs {
+public class ArgsCreateKeyRsa2048AndSign implements IArgs {
     private String keyHandle;
     private String padding;
     private String data;

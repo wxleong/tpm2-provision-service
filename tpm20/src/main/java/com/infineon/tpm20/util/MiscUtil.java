@@ -39,4 +39,8 @@ public class MiscUtil {
             return null;
         }
     }
+
+    public static String toHexString(int i) {
+        return "0x" + Integer.toHexString(i).toUpperCase();
+    }
 }

@@ -1,8 +1,8 @@
 package com.infineon.tpm20.script;
 
 import com.google.common.primitives.Bytes;
-import com.infineon.tpm20.model.v1.session.ArgsCreateKeyRsa2048AndSign;
-import com.infineon.tpm20.model.v1.session.ResultCreateKeyRsa2048AndSign;
+import com.infineon.tpm20.model.v1.session.ArgsCreateKeyRsa2048;
+import com.infineon.tpm20.model.v1.session.ResultCreateKeyRsa2048;
 import com.infineon.tpm20.service.CAService;
 import com.infineon.tpm20.util.MiscUtil;
 import org.springframework.context.ApplicationContext;
@@ -19,21 +19,21 @@ import java.util.Arrays;
 
 import static com.infineon.tpm20.util.TpmUtil.cleanSlots;
 
-public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
+public class CommandSetCreateKeyRsa2048 extends AbstractCommandSet {
 
-    public static String name = "key-rsa2048-create-and-sign";
+    public static String name = "create-key-rsa2048";
 
     public CAService caService;
 
-    public CommandSetKeyRsa2048CreateAndSign(ApplicationContext applicationContext, String args) {
-        super(applicationContext, MiscUtil.JsonToObject(args, ArgsCreateKeyRsa2048AndSign.class));
+    public CommandSetCreateKeyRsa2048(ApplicationContext applicationContext, String args) {
+        super(applicationContext, MiscUtil.JsonToObject(args, ArgsCreateKeyRsa2048.class));
         caService = getApplicationContext().getBean(CAService.class);
     }
 
     @Override
     public void run(Tpm tpm) {
         try {
-            ArgsCreateKeyRsa2048AndSign argsCreateKeyRsa2048AndSign = (ArgsCreateKeyRsa2048AndSign) getArgs();
+            ArgsCreateKeyRsa2048 argsCreateKeyRsa2048 = (ArgsCreateKeyRsa2048) getArgs();
             TPM_HANDLE ekPersistentHandle = new TPM_HANDLE(0x81010001);
             byte[] standardEKPolicy = Helpers.fromHex("837197674484b3f81a90cc8d46a5d724fd52d76e06520b64f2a1da1b331469aa");
             TPMT_PUBLIC ekPub, signPub;
@@ -76,7 +76,7 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
             try {
                 readAndVerifyEkCert(tpm, ekPub);
             } catch (Exception e) {
-                setResult(new ResultCreateKeyRsa2048AndSign("", "", "", ""));
+                setResult(new ResultCreateKeyRsa2048("", "",""));
                 return;
             }
 
@@ -84,10 +84,10 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
 
             TPM_HANDLE signKeyPersistentHandle;
 
-            if (argsCreateKeyRsa2048AndSign == null || argsCreateKeyRsa2048AndSign.getKeyHandle() == null)
+            if (argsCreateKeyRsa2048 == null || argsCreateKeyRsa2048.getKeyHandle() == null)
                 signKeyPersistentHandle = new TPM_HANDLE(0x81000100);
             else
-                signKeyPersistentHandle = new TPM_HANDLE(Long.decode(argsCreateKeyRsa2048AndSign.getKeyHandle()).intValue());
+                signKeyPersistentHandle = new TPM_HANDLE(Long.decode(argsCreateKeyRsa2048.getKeyHandle()).intValue());
 
             rpResp = tpm._allowErrors().ReadPublic(signKeyPersistentHandle);
             rc = tpm._getLastResponseCode();
@@ -158,7 +158,7 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
                     new byte[0], new byte[0], 0);
             byte[] policyDigest = tpm.PolicyGetDigest(policySession.handle);
             if (!Arrays.equals(policyDigest, standardEKPolicy)) {
-                setResult(new ResultCreateKeyRsa2048AndSign("", "", "", ""));
+                setResult(new ResultCreateKeyRsa2048("", "",""));
                 return;
             }
             tpm._withSessions(TPM_HANDLE.pwSession(new byte[0]), policySession.handle);
@@ -168,50 +168,8 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
             /* verify the challenge, this will guarantee the signing key resides in an authentic TPM */
 
             if (!Arrays.equals(challenge, recoveredChallenge)) {
-                setResult(new ResultCreateKeyRsa2048AndSign("", "", "", ""));
+                setResult(new ResultCreateKeyRsa2048("", "",""));
                 return;
-            }
-
-            /* sign the given data/digest */
-
-            String sigBase64 = "";
-            if (argsCreateKeyRsa2048AndSign != null
-                    && (argsCreateKeyRsa2048AndSign.getData() != null
-                    || argsCreateKeyRsa2048AndSign.getDigest() != null)) {
-                byte[] digest = null;
-
-                if (argsCreateKeyRsa2048AndSign.getData() != null) {
-                    byte[] data = MiscUtil.base64ToByteArray(argsCreateKeyRsa2048AndSign.getData());
-                    if (data.length > 0) {
-                        digest = TPMT_HA.fromHashOf(TPM_ALG_ID.SHA256, data).digest;
-                    }
-                } else if (argsCreateKeyRsa2048AndSign.getDigest() != null) {
-                    digest = MiscUtil.base64ToByteArray(argsCreateKeyRsa2048AndSign.getDigest());
-                    if (digest.length != 32) {
-                        digest = null;
-                    }
-                }
-
-                if (digest != null) {
-                    if (argsCreateKeyRsa2048AndSign.getPadding() != null
-                            && argsCreateKeyRsa2048AndSign.getPadding().equals("pss")) {
-                        TPMU_SIGNATURE signature = tpm.Sign(signKeyPersistentHandle,
-                                digest,
-                                new TPMS_SIG_SCHEME_RSAPSS(TPM_ALG_ID.SHA256),
-                                new TPMT_TK_HASHCHECK());
-
-                        TPMS_SIGNATURE_RSAPSS sigRsa = (TPMS_SIGNATURE_RSAPSS)signature;
-                        sigBase64 = MiscUtil.byteArrayToBase64(sigRsa.sig);
-                    } else {
-                        TPMU_SIGNATURE signature = tpm.Sign(signKeyPersistentHandle,
-                                digest,
-                                new TPMS_SIG_SCHEME_RSASSA(TPM_ALG_ID.SHA256),
-                                new TPMT_TK_HASHCHECK());
-
-                        TPMS_SIGNATURE_RSASSA sigRsa = (TPMS_SIGNATURE_RSASSA) signature;
-                        sigBase64 = MiscUtil.byteArrayToBase64(sigRsa.sig);
-                    }
-                }
             }
 
             /* set result */
@@ -222,10 +180,9 @@ public class CommandSetKeyRsa2048CreateAndSign extends AbstractCommandSet {
             TPM2B_PUBLIC_KEY_RSA ekRsaPub = (TPM2B_PUBLIC_KEY_RSA) ekPub.unique;
             byte[] baEkRsaPub = ekRsaPub.buffer;
 
-            setResult(new ResultCreateKeyRsa2048AndSign(MiscUtil.byteArrayToBase64(baEkRsaPub),
+            setResult(new ResultCreateKeyRsa2048(MiscUtil.byteArrayToBase64(baEkRsaPub),
                     MiscUtil.byteArrayToBase64(baRsaPub),
-                    MiscUtil.toHexString(signKeyPersistentHandle.handle),
-                    sigBase64));
+                    MiscUtil.toHexString(signKeyPersistentHandle.handle)));
 
         } catch (Exception e) {
             //e.printStackTrace();

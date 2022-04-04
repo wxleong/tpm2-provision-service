@@ -1,9 +1,9 @@
 package com.infineon.tpm20.script;
 
+import com.infineon.tpm20.model.v1.session.ArgsCreateKeyRsa2048AndSign;
 import com.infineon.tpm20.model.v1.session.ArgsGetPubKey;
-import com.infineon.tpm20.model.v1.session.ArgsSigning;
+import com.infineon.tpm20.model.v1.session.ResultCreateKeyRsa2048AndSign;
 import com.infineon.tpm20.model.v1.session.ResultGetPubKey;
-import com.infineon.tpm20.model.v1.session.ResultRsaSigning;
 import com.infineon.tpm20.service.SessionRepoService;
 import com.infineon.tpm20.util.MiscUtil;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -41,6 +41,7 @@ import java.math.BigInteger;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.Signature;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
 
@@ -70,6 +71,8 @@ public class CommandSetKeyRsa2048CreateAndSignTests {
     @Disabled("Need Windows machine with TPM and administrator access (TPM2_ActivateCredential)")
     @Test
     void test1() {
+        String keyHandle = "0x81000100";
+        byte[] data = new byte[]{0, 1, 2, 3, 4};
 
         /*
            "spy" on script CommandSetKeyRsa2048CreateAndSign.class.
@@ -79,7 +82,8 @@ public class CommandSetKeyRsa2048CreateAndSignTests {
              a primitive/primitive wrapper value, or an empty collection, as appropriate
            - Mockito.spy(): all methods are original (CallRealMethod), unless specify.
          */
-        CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSignOrig = new CommandSetKeyRsa2048CreateAndSign(applicationContext, null);
+        CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSignOrig = new CommandSetKeyRsa2048CreateAndSign(applicationContext,
+                MiscUtil.objectToJson(new ArgsCreateKeyRsa2048AndSign(keyHandle, "pkcs", MiscUtil.byteArrayToBase64(data), "")));
         CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSign = Mockito.spy(commandSetKeyRsa2048CreateAndSignOrig);
 
         /*
@@ -102,9 +106,28 @@ public class CommandSetKeyRsa2048CreateAndSignTests {
                 .readAndVerifyEkCert(Mockito.any(Tpm.class), Mockito.any(TPMT_PUBLIC.class)));
 
         /* verify the execution is successful */
-        ResultRsaSigning resultRsaSigning = (ResultRsaSigning) commandSetKeyRsa2048CreateAndSign.getResult();
-        Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultRsaSigning.getEkPub()).length);
-        Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultRsaSigning.getPub()).length);
+        ResultCreateKeyRsa2048AndSign resultCreateKeyRsa2048AndSign = (ResultCreateKeyRsa2048AndSign) commandSetKeyRsa2048CreateAndSign.getResult();
+        byte[] pub = MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getPub());
+        byte[] sig = MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getSig());
+
+        Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getEkPub()).length);
+        Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getPub()).length);
+        Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getSig()).length);
+        Assertions.assertEquals("0x81000100", resultCreateKeyRsa2048AndSign.getKeyHandle());
+
+        /* verify signature */
+
+        try {
+            PublicKey publicKey = null;
+            publicKey = KeyFactory.getInstance("RSA")
+                    .generatePublic(new RSAPublicKeySpec(new BigInteger(1, pub), BigInteger.valueOf(65537)));
+            Signature signature = Signature.getInstance("SHA256withRSA");
+            signature.initVerify(publicKey);
+            signature.update(data);
+            Assertions.assertTrue(signature.verify(sig));
+        } catch (Exception e) {
+            Assertions.assertTrue(false);
+        }
     }
 
     //@Disabled("Need Windows machine with TPM")
@@ -175,7 +198,7 @@ public class CommandSetKeyRsa2048CreateAndSignTests {
          */
 
         CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSignOrig = new CommandSetKeyRsa2048CreateAndSign(applicationContext,
-                MiscUtil.objectToJson(new ArgsSigning("0x81000111", "pkcs", MiscUtil.byteArrayToBase64(content),"")));
+                MiscUtil.objectToJson(new ArgsCreateKeyRsa2048AndSign("0x81000111", "pkcs", MiscUtil.byteArrayToBase64(content),"")));
         CommandSetKeyRsa2048CreateAndSign commandSetKeyRsa2048CreateAndSign = Mockito.spy(commandSetKeyRsa2048CreateAndSignOrig);
 
         Assertions.assertDoesNotThrow(() -> Mockito.doNothing().when(commandSetKeyRsa2048CreateAndSign).readAndVerifyEkCert(Mockito.any(), Mockito.any()));
@@ -191,14 +214,14 @@ public class CommandSetKeyRsa2048CreateAndSignTests {
 
         /* verify the execution is successful */
 
-        ResultRsaSigning resultRsaSigning = (ResultRsaSigning) commandSetKeyRsa2048CreateAndSign.getResult();
-        Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultRsaSigning.getEkPub()).length);
-        Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultRsaSigning.getPub()).length);
-        Assertions.assertNotEquals("", resultRsaSigning.getSig());
+        ResultCreateKeyRsa2048AndSign resultCreateKeyRsa2048AndSign = (ResultCreateKeyRsa2048AndSign) commandSetKeyRsa2048CreateAndSign.getResult();
+        Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getEkPub()).length);
+        Assertions.assertEquals(256, MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getPub()).length);
+        Assertions.assertNotEquals("", resultCreateKeyRsa2048AndSign.getSig());
 
         /* set CSR content signature */
 
-        contentSigner.setSig(MiscUtil.base64ToByteArray(resultRsaSigning.getSig()));
+        contentSigner.setSig(MiscUtil.base64ToByteArray(resultCreateKeyRsa2048AndSign.getSig()));
 
         /* rebuild CSR with signature */
 
